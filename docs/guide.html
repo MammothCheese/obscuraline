@@ -33,7 +33,9 @@ nav ul a:hover { color: var(--mag); }
 nav ul a.cta { color: #0A061A; background: var(--mag); padding: 5px 12px; border-radius: 8px; font-weight: 700; box-shadow: 0 0 14px rgba(255, 60, 200, .35); }
 .hero { display: grid; grid-template-columns: 1fr 1.05fr; gap: 40px; align-items: center; padding: 56px 0 40px; }
 .kicker { color: var(--mag); font: 700 12px var(--mono); letter-spacing: 2px; text-transform: uppercase; }
-h1 { font: 700 clamp(38px, 5.4vw, 60px)/1.02 var(--narrow); margin: 10px 0 16px; letter-spacing: .5px; }
+h1 { font: 700 clamp(48px, 7.6vw, 95px)/.92 var(--narrow); margin: 10px 0 18px; letter-spacing: 2px; text-transform: uppercase; }
+h1 .o { display: block; color: #FAECDE; text-shadow: 4px 4px 0 #FF3CAA; }
+h1 .l { display: block; color: var(--cyan); text-shadow: 3px 3px 0 #2846C8; letter-spacing: .5em; font-size: .62em; margin-top: 6px; }
 h1 em, h2 em { font-style: normal; color: var(--mag); }
 h2 { font: 700 34px/1.1 var(--narrow); margin: 0 0 6px; letter-spacing: .4px; }
 h3 { font: 700 21px var(--narrow); margin: 22px 0 6px; letter-spacing: .3px; color: var(--c, var(--cyan)); }
@@ -106,7 +108,7 @@ svg .deco { font: 700 46px var(--narrow); letter-spacing: 2px; }
 <div class="hero">
   <div>
     <div class="kicker">An M-VAVE FM-1 GAME &middot; free and open source</div>
-    <h1>Obscura Line</h1>
+    <h1><span class="o">Obscura</span> <span class="l">Line</span></h1>
     <p class="lede">Blending driving, mechanical puzzles, synth jams and rhythm games, OBSCURA LINE is mysterious railway adventure designed for the unique FM-1 hardware. Journey around a synthwave loop, repair forgotten machines through sound and logic, and uncover the mystery at its heart.</p>
     <a class="btn primary" href="https://thefirmwarehub.com/firmware/obscuraline/">Get it from The Firmware Hub</a>
     <a class="btn primary" href="https://github.com/MammothCheese/obscuraline">Download on GitHub</a>
