@@ -5,6 +5,7 @@
     "other"
   ],
   "image": "docs/card/card_1.png",
+  "cheat": "https://mammothcheese.github.io/obscuraline/guide.html",
   "color": "#FF3CC8",
-  "sounds": "own: every sound is synthesised in code; the WAVs in docs/audio are recordings of the firmware's own output"
+  "sounds": "own"
 }
