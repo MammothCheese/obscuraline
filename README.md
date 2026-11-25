@@ -1,6 +1,6 @@
 # OBSCURA LINE
 
-<p align="center"><img src="docs/card/card_1.png" width="240" alt="OBSCURA LINE: a neon loop line, a light running round it, something beating at its heart"></p>
+<p align="center"><img src="docs/card/card_1.png" width="240" alt="OBSCURA LINE: the view from the cab, the line running toward a striped sunset and a snow-capped mountain"></p>
 
 **A mysterious train adventure for the M-VAVE FM-1.**
 
