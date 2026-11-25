@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="only dark">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0A061A">
+<title>OBSCURA LINE guide: the last train is yours</title>
+<meta name="description" content="A short guide to OBSCURA LINE, a mysterious railway adventure for the M-VAVE FM-1: the game, the controls that work everywhere, and how to drive the train.">
+<link rel="icon" href="card/card_1.png">
+<style>
+:root {
+  color-scheme: only dark;
+  --bg: #0A061A; --card: #150B2A; --line: #2E1D4A; --ink: #F2E8DC; --sub: #B4A6C8; --dim: #6E5E88; --cap: #241640;
+  --mag: #FF3CC8; --cyan: #3CE8FF; --gold: #ECBA5C; --amber: #FFA83C; --verd: #5AD7A0; --rose: #FF5A8C;
+  --narrow: Bahnschrift, "Arial Narrow", "Roboto Condensed", "Helvetica Neue", Arial, sans-serif;
+  --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 68px; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 var(--sans); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: 520px; z-index: -1; background: radial-gradient(ellipse at 50% -10%, rgba(140, 30, 150, .45), transparent 70%); }
+a { color: var(--cyan); }
+.wrap { max-width: 1060px; margin: 0 auto; padding: 0 22px; }
+header { position: sticky; top: 0; z-index: 5; background: rgba(10, 6, 26, .88); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+nav { display: flex; align-items: center; justify-content: space-between; height: 56px; gap: 16px; }
+.brand { font: 700 20px var(--narrow); letter-spacing: 3px; color: var(--ink); text-decoration: none; white-space: nowrap; }
+.brand span { color: var(--cyan); }
+nav ul { display: flex; gap: 14px; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; justify-content: flex-end; }
+nav ul a { color: var(--sub); text-decoration: none; font-size: 14px; }
+nav ul a:hover { color: var(--mag); }
+nav ul a.cta { color: #0A061A; background: var(--mag); padding: 5px 12px; border-radius: 8px; font-weight: 700; box-shadow: 0 0 14px rgba(255, 60, 200, .35); }
+.hero { display: grid; grid-template-columns: 1fr 1.05fr; gap: 40px; align-items: center; padding: 56px 0 40px; }
+.kicker { color: var(--mag); font: 700 12px var(--mono); letter-spacing: 2px; text-transform: uppercase; }
+h1 { font: 700 clamp(38px, 5.4vw, 60px)/1.02 var(--narrow); margin: 10px 0 16px; letter-spacing: .5px; }
+h1 em, h2 em { font-style: normal; color: var(--mag); }
+h2 { font: 700 34px/1.1 var(--narrow); margin: 0 0 6px; letter-spacing: .4px; }
+h3 { font: 700 21px var(--narrow); margin: 22px 0 6px; letter-spacing: .3px; color: var(--c, var(--cyan)); }
+.lede { color: var(--sub); font-size: 18px; margin: 0 0 22px; }
+.btn { display: inline-block; padding: 10px 18px; border-radius: 9px; text-decoration: none; font-size: 15px; margin: 0 10px 10px 0; }
+.btn.primary { background: var(--mag); color: #0A061A; font-weight: 700; box-shadow: 0 0 18px rgba(255, 60, 200, .35); }
+.btn.ghost { border: 1px solid var(--line); color: var(--ink); background: var(--card); }
+.btn.ghost:hover { border-color: var(--cyan); color: var(--cyan); }
+.note { color: var(--sub); font-size: 14px; }
+.toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; padding: 0; list-style: none; }
+.toc a { display: inline-block; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 4px 13px; font-size: 14px; color: var(--ink); text-decoration: none; }
+.toc a:hover { border-color: var(--mag); color: var(--mag); }
+section { padding: 50px 0; border-top: 1px solid var(--line); }
+.sub { color: var(--sub); margin: 0 0 24px; max-width: 760px; font-size: 17px; }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.split.rev > .art { order: -1; }
+.art { background: linear-gradient(#120826, #0B0618); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: 0 12px 40px rgba(0, 0, 0, .35); }
+.art svg { display: block; width: 100%; height: auto; }
+.art + .cap, .cap { color: var(--dim); font-size: 13px; margin: 8px 0 0; text-align: center; }
+p { margin: 0 0 12px; }
+ul.do { margin: 0 0 12px; padding-left: 20px; }
+ul.do li { margin: 6px 0; }
+kbd { font: 700 12.5px var(--mono); background: var(--cap); color: var(--ink); border: 1px solid var(--line); border-bottom: 2px solid #4A3470; border-radius: 4px; padding: 0 5px; white-space: nowrap; }
+.tip { background: var(--card); border-left: 4px solid var(--c, var(--mag)); border-radius: 0 10px 10px 0; padding: 11px 15px; margin: 14px 0; font-size: 15px; color: var(--sub); }
+.tip b { color: var(--ink); }
+table.k { border-collapse: collapse; width: 100%; font-size: 15px; margin: 6px 0 10px; }
+table.k td { padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.k td:first-child { white-space: nowrap; width: 1%; padding-right: 14px; }
+.steps { counter-reset: s; list-style: none; padding: 0; margin: 0 0 12px; }
+.steps li { counter-increment: s; position: relative; padding: 6px 0 6px 40px; }
+.steps li::before { content: counter(s); position: absolute; left: 0; top: 6px; width: 26px; height: 26px; border-radius: 50%; background: var(--c, var(--mag)); color: #0A061A; font: 700 14px/26px var(--mono); text-align: center; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-top: 18px; }
+.gcard { background: var(--card); border: 1px solid var(--line); border-top: 3px solid var(--c, var(--mag)); border-radius: 10px; padding: 12px 15px; }
+.gcard h4 { margin: 0 0 4px; font: 700 13px var(--mono); letter-spacing: 1.5px; text-transform: uppercase; color: var(--c, var(--mag)); }
+.gcard p { margin: 0; font-size: 14.5px; color: var(--sub); }
+.drive-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.drive-head .kicker { color: var(--cyan); }
+.sub-sec { padding-top: 34px; }
+footer { color: var(--sub); font-size: 13px; padding: 30px 0 50px; border-top: 1px solid var(--line); }
+footer a { color: var(--sub); }
+svg text { font-family: var(--mono); fill: var(--sub); font-size: 13px; }
+svg .big { font: 700 15px var(--mono); fill: var(--ink); }
+svg .deco { font: 700 46px var(--narrow); letter-spacing: 2px; }
+@media (max-width: 860px) {
+  .hero, .split { grid-template-columns: 1fr; } .split.rev > .art { order: 0; } nav ul li.opt { display: none; } .hero { padding-top: 30px; }
+}
+@media print { header { display: none; } body { background: #fff; color: #111; } .art { break-inside: avoid; } }
+</style>
+</head>
+<body id="top">
+<header><div class="wrap"><nav>
+  <a class="brand" href="#top">OBSCURA <span>LINE</span></a>
+  <ul>
+    <li class="opt"><a href="#controls">Controls</a></li>
+    <li class="opt"><a href="#map">The map</a></li>
+    <li><a href="#drive">Driving</a></li>
+    <li class="opt"><a href="#stations">Stations</a></li>
+    <li class="opt"><a href="#rides">Rides</a></li>
+    <li><a class="cta" href="https://thefirmwarehub.com/">Get it</a></li>
+  </ul>
+</nav></div></header>
+
+<main class="wrap">
+
+<div class="hero">
+  <div>
+    <div class="kicker">An M-VAVE FM-1 GAME &middot; free and open source</div>
+    <h1>Obscura Line</h1>
+    <p class="lede">Blending driving, mechanical puzzles, synth jams and rhythm games, OBSCURA LINE is mysterious railway adventure designed for the unique FM-1 hardware. Journey around a synthwave loop, repair forgotten machines through sound and logic, and uncover the mystery at its heart.</p>
+    <a class="btn primary" href="https://thefirmwarehub.com/">Get it from The Firmware Hub</a>
+    <a class="btn ghost" href="#drive">How to drive</a>
+  </div>
+  <div><div class="art"><svg data-scene="hero" viewBox="0 0 600 420"></svg></div></div>
+</div>
+
+<ul class="toc">
+  <li><a href="#controls">Controls</a></li><li><a href="#map">The map</a></li>
+  <li><a href="#drive">Driving the train</a></li><li><a href="#stations">Stations</a></li><li><a href="#rides">The rides</a></li><li><a href="#beyond">Beyond the loop</a></li>
+</ul>
+
+
+
+<section id="controls" style="--c: var(--gold)">
+  <div class="split rev">
+    <div>
+      <h2>Controls that work everywhere</h2>
+      <p class="sub">Most controls are explained in the game as you meet them. These few work everywhere.</p>
+      <table class="k">
+        <tr><td><kbd>PLAY</kbd></td><td>go on: start, next page, confirm</td></tr>
+        <tr><td><kbd>HOME</kbd></td><td>back to the map (twice: the title)</td></tr>
+        <tr><td><kbd>SAVE</kbd> held</td><td>skip a puzzle or drive you're stuck on</td></tr>
+        <tr><td><kbd>EDIT</kbd></td><td>show the instruction card again</td></tr>
+        <tr><td>any knob</td><td>on the map, choose a station or a line</td></tr>
+        <tr><td><kbd>MASTER</kbd></td><td>volume</td></tr>
+      </table>
+      <p class="tip"><b>The lit buttons are the ones that do something.</b> Each puzzle's card lists its own controls, and the bar at the bottom of the screen reminds you.</p>
+    </div>
+    <div><div class="art"><svg data-scene="panel" viewBox="0 0 600 300"></svg></div></div>
+  </div>
+</section>
+
+<section id="map" style="--c: var(--cyan)">
+  <div class="split">
+    <div>
+      <h2>The map</h2>
+      <p class="sub">Where you choose stations and lines, and see your grades.</p>
+      <ul class="do">
+        <li>Turn any knob to step through the stations you've reached and the lines out of them. <kbd>PLAY</kbd> plays a station's puzzles, or drives a line.</li>
+        <li>Solve a station's puzzles to <b>restore</b> it, and the next line opens.</li>
+        <li><kbd>FX</kbd> shows the train's blueprint: the parts you've restored and the button each one uses.</li>
+      </ul>
+    </div>
+    <div><div class="art"><svg data-scene="map" viewBox="0 0 600 320"></svg></div><p class="cap">Each restored station opens the next line.</p></div>
+  </div>
+</section>
+
+<section id="drive" style="--c: var(--cyan)">
+  <div class="drive-head"><h2>Driving the train</h2><span class="kicker">four things to know</span></div>
+  <p class="sub">Before your first drive, the game shows you the basics on four cards. Here they are, with a little more.</p>
+
+  <div class="split" style="--c: var(--mag)">
+    <div>
+      <h3>1 · Wake the cab</h3>
+      <p>Every drive starts with the cab's start-up. The screen tells you each step:</p>
+      <ol class="steps">
+        <li><kbd>PLAY</kbd> powers on, and the lamps light one by one.</li>
+        <li>The cab sings a short phrase. <b>Play it back</b> on the keys, the right notes in order.</li>
+        <li><kbd>SEQ</kbd> sets the reverser forward, then <kbd>ARP</kbd> closes the doors.</li>
+      </ol>
+      <p class="tip"><b>Missed the phrase?</b> <kbd>PLAY</kbd> hears it again. After a couple of wrong tries, the next key blinks.</p>
+    </div>
+    <div><div class="art"><svg data-scene="startup" viewBox="0 0 600 300"></svg></div></div>
+  </div>
+
+  <div class="split rev sub-sec" style="--c: var(--cyan)">
+    <div>
+      <h3>2 · Power and brake</h3>
+      <p>One knob drives the train: <kbd>PRESETS</kbd>.</p>
+      <ul class="do">
+        <li>Turn it <b>right</b> for power on five notches.</li>
+        <li>Turn it <b>left</b> for the brake on eight notches. The last is the emergency brake, which costs a point in scoring.</li>
+        <li>In the middle, the train coasts.</li>
+      </ul>
+      <p class="tip"><b>Brake early and gently.</b> A train is heavy: it carries on much further than you expect.</p>
+    </div>
+    <div><div class="art"><svg data-scene="notch" viewBox="0 0 600 300"></svg></div></div>
+  </div>
+
+  <div class="split sub-sec" style="--c: var(--gold)">
+    <div>
+      <h3>3 · Speed limits and the stop</h3>
+      <ul class="do">
+        <li>The round sign is the <b>speed limit</b>. The small numbers beside it show the next limit and how far away it is.</li>
+        <li>Near the end, the metres count down to the <b>marker</b>. Stop with the front of the train on it: the closer, the better.</li>
+        <li>Once you have the pocket watch, there's a timetable too: arrive on time for more points.</li>
+      </ul>
+      <p class="tip"><b>At the platform</b> you get a score for the stop, the time and what happened on the way, graded F to S. Drive any line again to beat it.</p>
+    </div>
+    <div><div class="art"><svg data-scene="stop" viewBox="0 0 600 300"></svg></div></div>
+  </div>
+
+  <div class="split rev sub-sec" style="--c: var(--mag)">
+    <div>
+      <h3>4 · The train grows as you go</h3>
+      <p>Puzzles give back parts of the train. Each one brings something to do on the way, and a point for doing it:</p>
+      <table class="k">
+        <tr><td><kbd>REC</kbd> horn</td><td>a fox or people on the line ahead</td></tr>
+        <tr><td><kbd>SEL</kbd> call</td><td>yellow speed boards: point and call</td></tr>
+        <tr><td><kbd>ARP</kbd> whistle</td><td>W boards, before tunnels and bridges</td></tr>
+        <tr><td><kbd>FX</kbd> dimmer</td><td>a train coming the other way</td></tr>
+      </table>
+      <p class="tip"><b>The synth:</b> once the cab's synth is back, the keys play along. In a <b>synth break</b> the line holds your speed while you play on the beat. Later, <kbd>SEQ</kbd> changes its voice.</p>
+    </div>
+    <div><div class="art"><svg data-scene="events" viewBox="0 0 600 300"></svg></div></div>
+  </div>
+</section>
+
+<section id="stations" style="--c: var(--gold)">
+  <div class="split">
+    <div>
+      <h2>Twelve stations, twelve puzzles</h2>
+      <p class="sub">At every station something has stopped working. Each puzzle opens with a card that says what to do and which controls it uses.</p>
+      <ul class="do">
+        <li>Most are solved by ear as much as by eye: listen for clicks, beats, throbs and tunes.</li>
+        <li>Some give hints if you take a while.</li>
+        <li>Truly stuck? Hold <kbd>SAVE</kbd> to watch the answer play out.</li>
+      </ul>
+    </div>
+    <div><div class="art"><svg data-scene="puzzle" viewBox="0 0 600 300"></svg></div></div>
+  </div>
+</section>
+
+<section id="rides" style="--c: var(--cyan)">
+  <div class="split rev">
+    <div>
+      <h2>The rides</h2>
+      <p class="sub">Two lines are rhythm games instead of drives.</p>
+      <ul class="do">
+        <li>You can't fail a ride; how close you are sets your grade.</li>
+      </ul>
+    </div>
+    <div><div class="art"><svg data-scene="ride" viewBox="0 0 600 300"></svg></div></div>
+  </div>
+</section>
+
+<section id="beyond" style="--c: var(--mag)">
+  <div class="split">
+    <div>
+      <h2>Something <em>beats</em> beneath it all</h2>
+      <p class="sub">Drive the whole loop to find out the mystery.</p>
+      <ul class="do">
+        <li>Finish the game to unlock two more modes.</li>
+      </ul>
+    </div>
+    <div><div class="art"><svg data-scene="beyond" viewBox="0 0 600 300"></svg></div></div>
+  </div>
+</section>
+
+</main>
+<footer><div class="wrap">OBSCURA LINE by MammothCheese, an Eastlake Games production &middot; built on Dinghy (zvenson), on Felucca's platform (Leo Kuroshita, Hugelton Instruments) and SLOOP (isod89) &middot; open source, GPL-3.0 &middot; get it from <a href="https://thefirmwarehub.com/">The Firmware Hub</a></div></footer>
+<script>
+(() => {
+  'use strict';
+  const NS = 'http://www.w3.org/2000/svg';
+  const C = { mag: '#FF3CC8', cyan: '#3CE8FF', gold: '#ECBA5C', amber: '#FFA83C', verd: '#5AD7A0', rose: '#FF5A8C', ink: '#F2E8DC', sub: '#B4A6C8', dim: '#6E5E88', line: '#33204F', night: '#0A061A', card: '#160C2C' };
+  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function el(p, tag, a, text) { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); if (text != null) e.textContent = text; p.appendChild(e); return e; }
+  function glow(svg, id, col, sd) {
+    let defs = svg.querySelector('defs') || el(svg, 'defs', {});
+    const f = el(defs, 'filter', { id, x: '-50%', y: '-50%', width: '200%', height: '200%' });
+    el(f, 'feGaussianBlur', { stdDeviation: sd || 4, result: 'b' });
+    const m = el(f, 'feMerge', {}); el(m, 'feMergeNode', { in: 'b' }); el(m, 'feMergeNode', { in: 'SourceGraphic' });
+    return `url(#${id})`;
+  }
+  const beat = (t) => { const ph = t % 1000; return ph < 140 ? 1 - ph / 140 : ph > 260 && ph < 400 ? .7 * (1 - (ph - 260) / 140) : 0; };   // lub-dub
+  function loopPts(cx, cy, rx, ry, n) { const p = []; for (let k = 0; k < n; k++) { const a = 2 * Math.PI * k / n; p.push([cx + rx * Math.cos(a) * (1 + .08 * Math.sin(3 * a)), cy + ry * Math.sin(a) * (1 + .1 * Math.cos(2 * a))]); } return p; }
+  const path = (p) => 'M' + p.map((q) => q[0].toFixed(1) + ',' + q[1].toFixed(1)).join('L') + 'Z';
+
+  const S = {};
+  // the title: the loop, its stations, a light running round, the heart beating
+  S.hero = (svg) => {
+    const g = glow(svg, 'hg', C.mag, 5), gc = glow(svg, 'hc', C.cyan, 2.5);
+    const P = loopPts(300, 210, 230, 150, 240);   /* (rounder: the loop alone, no title over it) */
+    el(svg, 'path', { d: path(P), fill: 'none', stroke: C.mag, 'stroke-width': 10, opacity: .25, filter: g });
+    el(svg, 'path', { d: path(P), fill: 'none', stroke: C.cyan, 'stroke-width': 2.2, filter: gc });
+    for (let k = 0; k < 7; k++) { const q = P[(k * 240 / 7 + 6) | 0]; el(svg, 'circle', { cx: q[0], cy: q[1], r: 6, fill: C.night, stroke: C.ink, 'stroke-width': 2 }); }
+    const trail = []; for (let j = 0; j < 18; j++) trail.push(el(svg, 'circle', { r: 4.5 - j * .2, fill: '#FFE6FA', opacity: 1 - j / 19 }));
+    const heart = el(svg, 'circle', { cx: 300, cy: 210, r: 8, fill: C.mag, filter: g });
+    el(svg, 'circle', { cx: 300, cy: 210, r: 3, fill: '#FFF0FA' });
+    return (t) => {
+      const h = (t / 35) | 0;
+      trail.forEach((c, j) => { const q = P[((h - j * 2) % 240 + 240) % 240]; c.setAttribute('cx', q[0]); c.setAttribute('cy', q[1]); });
+      heart.setAttribute('r', 7 + 6 * beat(t));
+    };
+  };
+  // switching on: the loop alone, then the name
+  S.boot = (svg) => {
+    const g = glow(svg, 'bg', C.mag, 4);
+    const P = loopPts(300, 190, 200, 70, 200);
+    el(svg, 'path', { d: path(P), fill: 'none', stroke: C.cyan, 'stroke-width': 2, filter: g });
+    const heart = el(svg, 'circle', { cx: 300, cy: 190, r: 6, fill: C.mag, filter: g });
+    const name = el(svg, 'text', { x: 300, y: 70, 'text-anchor': 'middle', class: 'deco', style: 'fill:#F2E8DC;filter:drop-shadow(3px 3px 0 #FF3CC8)' }, 'OBSCURA');
+    const cap = el(svg, 'text', { x: 300, y: 285, 'text-anchor': 'middle', class: 'big' }, 'PLAY to begin');
+    const dot = el(svg, 'circle', { r: 4, fill: '#FFE6FA' });
+    return (t) => {
+      const c = t % 6000, a = c < 2000 ? 0 : Math.min(1, (c - 2000) / 1000);
+      name.setAttribute('opacity', a); cap.setAttribute('opacity', a);
+      heart.setAttribute('r', 5 + 5 * beat(t));
+      const q = P[((t / 30) | 0) % 200]; dot.setAttribute('cx', q[0]); dot.setAttribute('cy', q[1]);
+    };
+  };
+  // the buttons: each lights in turn with what it does
+  S.panel = (svg) => {
+    el(svg, 'rect', { x: 30, y: 40, width: 540, height: 180, rx: 18, fill: C.card, stroke: C.line, 'stroke-width': 2 });
+    const B = [['PLAY', 'go on, confirm', C.verd], ['HOME', 'back to the map', C.cyan], ['SAVE', 'held: skip it', C.amber], ['EDIT', 'the card again', C.gold], ['KNOB', 'choose on the map', C.mag]];
+    const items = B.map((b, i) => {
+      const x = 70 + i * 100, g = el(svg, 'g', {});
+      const shape = i === 4 ? el(g, 'circle', { cx: x + 30, cy: 115, r: 30, fill: C.night, stroke: C.dim, 'stroke-width': 3 }) : el(g, 'rect', { x, y: 90, width: 60, height: 50, rx: 10, fill: C.night, stroke: C.dim, 'stroke-width': 3 });
+      el(g, 'text', { x: x + 30, y: 175, 'text-anchor': 'middle', class: 'big' }, b[0]);
+      return { shape, col: b[2], what: b[1] };
+    });
+    const knobMark = el(svg, 'line', { x1: 500, y1: 115, x2: 500, y2: 92, stroke: C.ink, 'stroke-width': 3, 'stroke-linecap': 'round' });
+    const cap = el(svg, 'text', { x: 300, y: 270, 'text-anchor': 'middle', style: 'font:700 18px var(--mono);fill:#F2E8DC' }, '');
+    return (t) => {
+      const i = ((t / 1400) | 0) % items.length;
+      items.forEach((it, k) => { it.shape.setAttribute('stroke', k === i ? it.col : C.dim); it.shape.setAttribute('fill', k === i ? it.col + '33' : C.night); });
+      cap.textContent = B[i][0] + ': ' + items[i].what; cap.style.fill = items[i].col;
+      knobMark.setAttribute('transform', `rotate(${i === 4 ? Math.sin(t / 300) * 60 : 0} 500 115)`);
+    };
+  };
+  // the map: the lines light one by one as stations are restored; the next line blinks
+  S.map = (svg) => {
+    const N = [[90, 260], [150, 90], [255, 125], [360, 70], [470, 120], [500, 220], [400, 280], [270, 290], [175, 205]];
+    const E = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 2]];
+    const g = glow(svg, 'mg', C.cyan, 3);
+    const lines = E.map(([a, b]) => el(svg, 'line', { x1: N[a][0], y1: N[a][1], x2: N[b][0], y2: N[b][1], stroke: C.line, 'stroke-width': 4, 'stroke-dasharray': '2 7', 'stroke-linecap': 'round' }));
+    const dots = N.map((q) => el(svg, 'circle', { cx: q[0], cy: q[1], r: 9, fill: C.night, stroke: C.dim, 'stroke-width': 3 }));
+    const heart = el(svg, 'circle', { cx: 330, cy: 195, r: 0, fill: C.mag, filter: g });
+    return (t) => {
+      const n = ((t / 900) | 0) % (E.length + 4);
+      lines.forEach((l, k) => { const on = k < n, next = k === n; l.setAttribute('stroke', on ? C.cyan : next && ((t / 300) | 0) % 2 ? C.amber : C.line); l.setAttribute('stroke-dasharray', on ? 'none' : '2 7'); l.setAttribute('filter', on ? g : ''); });
+      dots.forEach((d, k) => { const on = k <= Math.min(n, 8); d.setAttribute('stroke', on ? C.cyan : C.dim); d.setAttribute('fill', on ? '#3CE8FF55' : C.night); });
+      heart.setAttribute('r', n >= E.length ? 6 + 5 * beat(t) : 0);
+    };
+  };
+  // the start-up: power, the phrase sung and played back, reverser, doors
+  S.startup = (svg) => {
+    const steps = [['PLAY', 'POWER ON'], ['', 'LISTEN...'], ['KEYS', 'PLAY IT BACK'], ['SEQ', 'REVERSER F'], ['ARP', 'CLOSE DOORS']];
+    const boxes = steps.map((s, i) => { const x = 22 + i * 114; const r = el(svg, 'rect', { x, y: 30, width: 104, height: 56, rx: 10, fill: C.card, stroke: C.dim, 'stroke-width': 2 }); el(svg, 'text', { x: x + 52, y: 54, 'text-anchor': 'middle', class: 'big' }, s[0] || '♪'); el(svg, 'text', { x: x + 52, y: 76, 'text-anchor': 'middle', style: 'font-size:11px' }, s[1]); return r; });
+    const keys = []; const ph = [2, 4, 5];
+    for (let k = 0; k < 8; k++) keys.push(el(svg, 'rect', { x: 120 + k * 46, y: 140, width: 42, height: 120, rx: 5, fill: '#EDE6DA', stroke: C.night }));
+    const lamps = []; for (let k = 0; k < 6; k++) lamps.push(el(svg, 'circle', { cx: 200 + k * 40, cy: 115, r: 7, fill: C.line }));
+    return (t) => {
+      const c = t % 9000, st = c < 1500 ? 0 : c < 3300 ? 1 : c < 5400 ? 2 : c < 7200 ? 3 : 4;
+      boxes.forEach((b, i) => { b.setAttribute('stroke', i === st ? C.mag : i < st ? C.verd : C.dim); b.setAttribute('fill', i === st ? '#FF3CC822' : C.card); });
+      lamps.forEach((l, k) => l.setAttribute('fill', c > 300 + k * 180 ? [C.verd, C.cyan, C.amber, C.verd, C.mag, C.cyan][k] : C.line));
+      let lit = -1;
+      if (st === 1) { const i = ((c - 1500) / 600) | 0; if (i < 3 && (c - 1500) % 600 < 400) lit = ph[i]; }
+      if (st === 2) { const i = ((c - 3300) / 700) | 0; if (i < 3 && (c - 3300) % 700 < 300) lit = ph[i]; }
+      keys.forEach((k, i) => k.setAttribute('fill', i === lit ? (st === 1 ? C.mag : C.cyan) : '#EDE6DA'));
+    };
+  };
+  // power and brake: the notch dial and the speed answering it
+  S.notch = (svg) => {
+    const cx = 300, cy = 220;
+    for (let k = -8; k <= 5; k++) { const a = (k / 8) * 80 * Math.PI / 180 * (k > 0 ? 8 / 5 * 0.62 : 1); const x = cx + 120 * Math.sin(a), y = cy - 120 * Math.cos(a); el(svg, 'circle', { cx: x, cy: y, r: 6, fill: k < 0 ? C.rose : k > 0 ? C.cyan : C.ink }); }
+    el(svg, 'text', { x: 120, y: 200, 'text-anchor': 'middle', style: 'font:700 18px var(--mono);fill:#FF5A8C' }, 'BRAKE');
+    el(svg, 'text', { x: 480, y: 200, 'text-anchor': 'middle', style: 'font:700 18px var(--mono);fill:#3CE8FF' }, 'POWER');
+    el(svg, 'circle', { cx, cy, r: 26, fill: C.card, stroke: C.gold, 'stroke-width': 3 });
+    const needle = el(svg, 'line', { x1: cx, y1: cy, x2: cx, y2: cy - 100, stroke: C.ink, 'stroke-width': 5, 'stroke-linecap': 'round' });
+    const spd = el(svg, 'text', { x: cx, y: 60, 'text-anchor': 'middle', style: 'font:700 40px var(--narrow);fill:#F2E8DC' }, '0');
+    el(svg, 'text', { x: cx + 52, y: 60, style: 'font:700 14px var(--mono)' }, 'km/h');
+    const lab = el(svg, 'text', { x: cx, y: 285, 'text-anchor': 'middle', class: 'big' }, 'PRESETS');
+    let v = 0, last = 0;
+    return (t) => {
+      const c = t % 10000, n = c < 4000 ? Math.min(5, (c / 600) | 0) : c < 5500 ? 0 : c < 9000 ? -Math.min(6, ((c - 5500) / 500) | 0) : 0;
+      const a = n >= 0 ? n / 5 * 80 * .62 * 8 / 5 : n / 8 * 80;
+      needle.setAttribute('transform', `rotate(${a} ${cx} ${cy})`);
+      const dt = Math.min(.1, (t - last) / 1000); last = t;
+      v += (n > 0 ? n * 3 : n < 0 ? n * 6 : -0.5) * dt * 4; v = Math.max(0, Math.min(90, v)); if (c < 30) v = 0;
+      spd.textContent = Math.round(v);
+      lab.textContent = n > 0 ? 'PRESETS  P' + n : n < 0 ? 'PRESETS  B' + -n : 'PRESETS  coast';
+      lab.style.fill = n > 0 ? C.cyan : n < 0 ? C.rose : C.ink;
+    };
+  };
+  // the limit sign and the stop: the train slows onto the marker
+  S.stop = (svg) => {
+    el(svg, 'circle', { cx: 80, cy: 70, r: 38, fill: '#DC1E3C' }); el(svg, 'circle', { cx: 80, cy: 70, r: 29, fill: '#FAF6F0' });
+    const lim = el(svg, 'text', { x: 80, y: 82, 'text-anchor': 'middle', style: 'font:700 32px var(--narrow);fill:#140F1E' }, '40');
+    el(svg, 'path', { d: 'M136 66 l9 -14 l9 14 z', fill: C.amber });
+    el(svg, 'text', { x: 160, y: 66, style: 'font:700 18px var(--mono);fill:#FFA83C' }, '25');
+    el(svg, 'text', { x: 136, y: 92, style: 'font:700 18px var(--mono);fill:#FFA83C' }, '120m');
+    el(svg, 'line', { x1: 20, y1: 230, x2: 580, y2: 230, stroke: '#BEAAE6', 'stroke-width': 3 });
+    for (let k = 0; k < 28; k++) el(svg, 'rect', { x: 24 + k * 20, y: 232, width: 10, height: 6, fill: '#503C64' });
+    el(svg, 'rect', { x: 470, y: 160, width: 5, height: 70, fill: C.amber }); el(svg, 'rect', { x: 456, y: 150, width: 33, height: 16, rx: 3, fill: C.amber });
+    const train = el(svg, 'g', {});
+    el(train, 'rect', { x: -150, y: 186, width: 150, height: 42, rx: 6, fill: '#46325F' });
+    el(train, 'rect', { x: -150, y: 198, width: 150, height: 5, fill: C.mag });
+    for (let k = 0; k < 5; k++) el(train, 'rect', { x: -140 + k * 28, y: 190, width: 20, height: 7, fill: C.gold });
+    const dist = el(svg, 'text', { x: 330, y: 150, 'text-anchor': 'middle', style: 'font:700 30px var(--narrow);fill:#F2E8DC' }, '');
+    const verdict = el(svg, 'text', { x: 330, y: 115, 'text-anchor': 'middle', style: 'font:700 22px var(--mono);fill:#ECBA5C' }, '');
+    return (t) => {
+      const c = t % 7000, u = Math.min(1, c / 4500), e = 1 - Math.pow(1 - u, 2.2);   // decelerating onto the marker
+      const front = 60 + e * (472 - 60);
+      train.setAttribute('transform', `translate(${front},0)`);
+      const m = (472 - front) / 2.2;
+      dist.textContent = c < 4500 ? m.toFixed(m < 10 ? 1 : 0) + ' m' : '0.0 m';
+      verdict.textContent = c > 4700 ? 'PERFECT  +10' : '';
+      lim.textContent = front > 300 ? '25' : '40';
+    };
+  };
+  // on the way: the horn, the call, the whistle, the dimmer, in turn
+  S.events = (svg) => {
+    const E = [['REC', 'HORN', 'fox ahead', C.amber], ['SEL', 'CALL', 'yellow board', C.gold], ['ARP', 'WHISTLE', 'W board', C.cyan], ['FX', 'DIM', 'train ahead', C.mag]];
+    const tiles = E.map((e, i) => {
+      const x = 22 + i * 142, g = el(svg, 'g', {});
+      const r = el(g, 'rect', { x, y: 40, width: 128, height: 170, rx: 14, fill: C.card, stroke: C.dim, 'stroke-width': 2 });
+      el(g, 'text', { x: x + 64, y: 150, 'text-anchor': 'middle', style: `font:700 22px var(--mono);fill:${e[3]}` }, e[0]);
+      el(g, 'text', { x: x + 64, y: 178, 'text-anchor': 'middle', class: 'big' }, e[1]);
+      el(g, 'text', { x: x + 64, y: 198, 'text-anchor': 'middle', style: 'font-size:11px' }, e[2]);
+      if (i === 0) { el(g, 'path', { d: `M${x + 40} 110 l12 -30 l8 18 l16 0 l8 -18 l12 30 z`, fill: e[3] }); }
+      if (i === 1) { el(g, 'rect', { x: x + 44, y: 70, width: 40, height: 40, rx: 4, fill: '#FFD23C' }); el(g, 'text', { x: x + 64, y: 97, 'text-anchor': 'middle', style: 'font:700 18px var(--mono);fill:#140F1E' }, '45'); }
+      if (i === 2) { el(g, 'rect', { x: x + 44, y: 70, width: 40, height: 40, rx: 4, fill: '#F2E8DC' }); el(g, 'text', { x: x + 64, y: 98, 'text-anchor': 'middle', style: 'font:700 22px var(--mono);fill:#140F1E' }, 'W'); }
+      if (i === 3) { el(g, 'circle', { cx: x + 50, cy: 90, r: 9, fill: '#FFF6D8' }); el(g, 'circle', { cx: x + 78, cy: 90, r: 9, fill: '#FFF6D8' }); }
+      return r;
+    });
+    const pt = el(svg, 'text', { x: 300, y: 262, 'text-anchor': 'middle', style: 'font:700 18px var(--mono);fill:#5AD7A0' }, '+1');
+    return (t) => {
+      const i = ((t / 1500) | 0) % 4, f = (t % 1500) / 1500;
+      tiles.forEach((r, k) => { r.setAttribute('stroke', k === i ? E[k][3] : C.dim); r.setAttribute('fill', k === i ? E[k][3] + '22' : C.card); });
+      pt.setAttribute('x', 86 + i * 142); pt.setAttribute('opacity', f > .5 ? 1 - (f - .5) * 2 : 0); pt.setAttribute('y', 262 - f * 20);
+    };
+  };
+  // a station: a safe's dial, turned, catching; the click flashes
+  S.puzzle = (svg) => {
+    const g = glow(svg, 'pg', C.gold, 3);
+    el(svg, 'circle', { cx: 300, cy: 150, r: 112, fill: '#2A1A10', stroke: C.gold, 'stroke-width': 4 });
+    const dial = el(svg, 'g', {});
+    el(dial, 'circle', { cx: 300, cy: 150, r: 92, fill: '#140C18', stroke: '#8A6428', 'stroke-width': 3 });
+    for (let k = 0; k < 40; k++) { const a = k / 40 * 2 * Math.PI; el(dial, 'line', { x1: 300 + 80 * Math.sin(a), y1: 150 - 80 * Math.cos(a), x2: 300 + (k % 5 ? 86 : 90) * Math.sin(a), y2: 150 - (k % 5 ? 86 : 90) * Math.cos(a), stroke: C.gold, 'stroke-width': k % 5 ? 1.5 : 3 }); if (k % 5 === 0) el(dial, 'text', { x: 300 + 64 * Math.sin(a), y: 155 - 64 * Math.cos(a), 'text-anchor': 'middle', style: 'font:700 13px var(--mono);fill:#ECBA5C' }, k); }
+    el(svg, 'circle', { cx: 300, cy: 150, r: 22, fill: '#8A6428' });
+    el(svg, 'path', { d: 'M292 28 l8 14 l8 -14 z', fill: C.cyan });
+    const click = el(svg, 'text', { x: 470, y: 90, 'text-anchor': 'middle', style: 'font:700 22px var(--mono);fill:#3CE8FF', filter: g }, 'click');
+    const names = el(svg, 'text', { x: 300, y: 292, 'text-anchor': 'middle', class: 'big' }, '');
+    const NM = ['THE STATION SAFE', 'THE DRIVER\'S WATCH', 'THE FOG HORN', 'THE DEPARTURE JINGLE', 'THE SIGNAL CONTROL', 'THE EXCHANGE', 'THE GHOST SIGNAL'];
+    return (t) => {
+      const c = t % 6000, a = c < 2000 ? c / 2000 * 140 : c < 2600 ? 140 : c < 4600 ? 140 - (c - 2600) / 2000 * 90 : 50;
+      dial.setAttribute('transform', `rotate(${a} 300 150)`);
+      click.setAttribute('opacity', (c > 2000 && c < 2600) || c > 4600 ? 1 : 0);
+      names.textContent = 'THE STATION SAFE: listen for the click';
+    };
+  };
+  // a ride: bells coming down four lanes, struck on the beat
+  S.ride = (svg) => {
+    const L = ['C', 'D', 'E'], X = (i, y) => 300 + (i - 1) * (52 + y * .58);   // three lanes, as the game has
+    for (let i = 0; i <= 3; i++) el(svg, 'line', { x1: 300 + (i - 1.5) * 52, y1: 20, x2: 300 + (i - 1.5) * 170, y2: 260, stroke: C.line, 'stroke-width': 2 });
+    el(svg, 'rect', { x: 40, y: 228, width: 520, height: 4, fill: C.gold });
+    const pads = L.map((l, i) => { const x = 300 + (i - 1) * 170; const r = el(svg, 'rect', { x: x - 50, y: 262, width: 100, height: 30, rx: 6, fill: C.card, stroke: C.dim }); el(svg, 'text', { x, y: 283, 'text-anchor': 'middle', class: 'big' }, l); return r; });
+    const SEQ = [0, 1, 2, 1, 0, 2, 1, 0];
+    const bells = SEQ.map(() => el(svg, 'circle', { r: 10, fill: '#FFD678' }));
+    const judge = el(svg, 'text', { x: 300, y: 200, 'text-anchor': 'middle', style: 'font:700 20px var(--mono);fill:#ECBA5C' }, '');
+    return (t) => {
+      const per = 600, now = t / per;
+      bells.forEach((b, k) => {
+        let arr = k + 8 * Math.floor((now - k) / 8 + 1) - 0; const ahead = arr - now;   // beats until it reaches the line
+        const y = 230 - ahead * 52; b.setAttribute('cy', y); b.setAttribute('cx', X(SEQ[k], y)); b.setAttribute('r', Math.max(1, 5 + y / 30)); b.setAttribute('opacity', y > 10 && y < 236 ? 1 : 0);
+      });
+      const hit = Math.round(now), d = Math.abs(now - hit);
+      pads.forEach((p, i) => p.setAttribute('fill', d < .15 && SEQ[((hit % 8) + 8) % 8] === i ? C.cyan : C.card));
+      judge.textContent = d < .25 ? 'PERFECT' : '';
+    };
+  };
+  // beyond: the coast line and the endless line
+  S.beyond = (svg) => {   // hints only: a little train along a coast, past its many stations; a track that never ends; something beating
+    const g = glow(svg, 'yg', C.mag, 5), gc = glow(svg, 'yc', C.cyan, 3);
+    for (let k = 0; k < 40; k++) el(svg, 'circle', { cx: (k * 151) % 600, cy: 14 + (k * 67) % 120, r: k % 3 ? 1 : 1.6, fill: k % 2 ? C.ink : C.cyan, opacity: .5 });
+    const coast = 'M30 240 C110 222 150 250 220 232 S340 204 410 220 S520 246 570 228';
+    el(svg, 'path', { d: 'M30 262 C190 252 370 272 570 256 L570 300 L30 300 Z', fill: '#1E3C6A', opacity: .75 });   // the sea
+    el(svg, 'ellipse', { cx: 300, cy: 262, rx: 26, ry: 7, fill: '#2E2440' });                                            // an island off the shore
+    el(svg, 'path', { d: coast, fill: 'none', stroke: '#BEAAE6', 'stroke-width': 3 });
+    const cp = el(svg, 'path', { d: coast, fill: 'none', stroke: 'none' });
+    const L0 = cp.getTotalLength();
+    for (let k = 0; k <= 14; k++) { const q = cp.getPointAtLength(L0 * k / 14); el(svg, 'rect', { x: q.x - 2, y: q.y - 9, width: 4, height: 7, rx: 1, fill: C.sub }); }   // its stations, many and close
+    const tr = el(svg, 'rect', { width: 22, height: 9, rx: 3, fill: C.verd });
+    const fig = []; for (let k = 0; k < 200; k++) { const a = 2 * Math.PI * k / 200, d = 1 + Math.sin(a) ** 2; fig.push([450 + 95 * Math.cos(a) / d, 100 + 95 * Math.sin(a) * Math.cos(a) / d]); }   // a track that comes back on itself
+    el(svg, 'path', { d: path(fig), fill: 'none', stroke: C.cyan, 'stroke-width': 7, opacity: .18, filter: gc });
+    el(svg, 'path', { d: path(fig), fill: 'none', stroke: C.cyan, 'stroke-width': 2 });
+    const trail = []; for (let j = 0; j < 14; j++) trail.push(el(svg, 'circle', { r: 4.2 - j * .25, fill: '#E6FBFF', opacity: 1 - j / 15 }));
+    const heart = el(svg, 'circle', { cx: 150, cy: 92, r: 6, fill: C.mag, filter: g, opacity: .8 });
+    return (t) => {
+      const q = cp.getPointAtLength((t / 14) % L0), q2 = cp.getPointAtLength(Math.min(L0, (t / 14) % L0 + 2));
+      tr.setAttribute('x', q.x - 11); tr.setAttribute('y', q.y - 12);
+      tr.setAttribute('transform', `rotate(${Math.atan2(q2.y - q.y, q2.x - q.x) * 57.3} ${q.x} ${q.y - 7})`);
+      const h = (t / 22) | 0; trail.forEach((c, j) => { const p = fig[((h - j * 2) % 200 + 200) % 200]; c.setAttribute('cx', p[0]); c.setAttribute('cy', p[1]); });
+      heart.setAttribute('r', 4 + 6 * beat(t));
+    };
+  };
+
+  // ---- every drawing ticks while it is on screen (still, at one moment, for reduced motion)
+  const items = [...document.querySelectorAll('svg[data-scene]')].map((s) => ({ svg: s, f: S[s.dataset.scene] ? S[s.dataset.scene](s) : null, vis: false }));
+  const io = new IntersectionObserver((es) => es.forEach((e) => { const it = items.find((i) => i.svg === e.target); if (it) it.vis = e.isIntersecting; }), { threshold: .05 });
+  items.forEach((it) => io.observe(it.svg));
+  const t0 = performance.now();
+  function frame(now) { items.forEach((it) => { if (it.f && (it.vis || !it.drawn)) { it.f(RM ? 2500 : now - t0); it.drawn = true; } }); requestAnimationFrame(frame); }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

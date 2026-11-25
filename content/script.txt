@@ -1,0 +1,639 @@
+# =====================================================================================================================
+#  OBSCURA LINE - THE SCRIPT (Mechanica Obscura's words for now: the new story is to be written)
+# =====================================================================================================================
+#
+#  Every word that shows up in the game. Edit freely, then build (tools/content.py checks it).
+#
+#  [chapter id]   one per chapter in puzzles.txt (same id):
+#      numeral    = I                      shown before the title in the header (empty for the prologue)
+#      title      = THE COURIER'S HEART    the header, the title screen's chapter list
+#      help_title = REGULATE THE BEAT      the instruction card's heading
+#      help       = ...                    the card's text: one line here, wrapped on screen, 200 characters at most
+#      footer     = K1 RATE  K2 BEAT       the control legend: TWO spaces separate items (each gets its own colour),
+#                                          30 characters at most
+#      word       = TRUE                   engraved on the plaque when it is solved, 10 characters at most
+#      done       = P-9 NOMINAL            (optional) a line some mechanisms show in their finale
+#      in:  art | voice | text             a story page before the puzzle
+#      out: art | voice | text             a story page after it
+#
+#      art:   platform train cab signalbox workshop map timetable pocketwatch harbour archive tunnel
+#             observatory depot ghost door heart sakura keeper darktrain office seatram festtram   (tools/style/line_art.py; a new one: add it there)
+#      voice: robot  (cyan capitals, a lower tick: the line's machines speaking)   or  -  (narration, cream)
+#      text:  about 150 characters at most (five lines on screen)
+#
+#  [ui]       short texts the mechanisms and menus show (key = text). Keep them about as long as they are:
+#             most sit in fixed places on a 240 pixel screen (8 pixels a character).
+#  [credits]  the closing scroll: gold: (Deco capitals), text:, neon: (cyan), gap:
+#
+# =====================================================================================================================
+
+[ui]
+tr_go          = TURN PRESETS TO DRIVE
+wt_title       = TIMEGRAPHER
+wt_k1          = SPEED
+wt_k2          = BALANCE
+wt_k3          = POWER
+wt_do1         = K1: MAKE THE LINE FLAT
+wt_do2         = K2: JOIN THE TWO LINES
+wt_do3         = K3: POWER INTO THE GREEN
+wt_testing     = HOLD IT STEADY...
+wt_done        = MOVEMENT REGULATED
+gh_a0          = 1924 BOX 7: A TRAIN IS ON MY LINE. NONE IS DUE.
+gh_a1          = 1926 BOX 3: COAL TRAIN LATE. FROST AT THE POINTS.
+gh_a2          = 1929 BOX 9: THE STATIONMASTER RETIRES FRIDAY.
+gh_b0          = 1958 BOX 7: THE TRAIN YOU SAW IN 1924 PASSED AGAIN.
+gh_b1          = 1953 BOX 2: NEW SIGNALS FITTED. ALL WORKING.
+gh_b2          = 1961 BOX 5: CRICKET SCORE PLEASE. OVER.
+gh_c0          = 1987 BOX 7: IT STOPS HERE NOW. IT ASKS FOR A DRIVER.
+gh_c1          = 1984 BOX 1: THE LINE CLOSES AT MONTH END.
+gh_c2          = 1989 BOX 4: VANDALS AT THE DEPOT AGAIN.
+gh_d0          = 2016 BOX 7: TELL IT A DRIVER IS COMING.
+gh_d1          = 2012 BOX 8: SURVEY TEAM ON SITE TUESDAY.
+gh_d2          = 2019 BOX 6: NO TRAINS HERE FOR YEARS.
+gh_hint        = Tune all four, then PLAY
+gh_tuneall     = TUNE ALL FOUR TO A MESSAGE
+gh_linking     = LINKING THE YEARS...
+gh_breaks      = THE CONVERSATION BREAKS:
+gh_done        = ONE CONVERSATION, ONE BOX
+ph_k1          = EXPOSURE
+ph_k2          = FOCUS
+ph_k3          = CONTRAST
+ph_k4          = DEVELOP
+ph_hold        = HOLD IT...
+ph_done1       = OLYMPIA, LONG AGO
+ph_done2       = A SIGN: SHINZO.
+tr_horn_work   = FOX AHEAD: REC HORN
+tr_horn_people = PEOPLE AHEAD: REC HORN
+tr_horn_curve  = BLIND CURVE: REC HORN
+tr_horn_deer   = DEER AHEAD: REC HORN
+tr_horn_ok1    = +1 Fox clear
+tr_horn_ok2    = +1 They wave
+tr_horn_ok3    = +1 All clear
+tr_horn_ok4    = +1 Deer clear
+map_ask_replay = REPLAY? PLAY AGAIN
+rg_linked      = Each knob turns the next ring too
+rh_along       = Play along
+rx_step1       = 1 FIND THE VOICE
+rx_step2       = 2 NARROW IT
+rx_step3       = 3 SET ITS LEVEL
+rx_step4       = 4 NOTCH THE WHINE
+sq_more        = MORE MOVES:
+sq_twice       = MOVES TWICE IN A ROW
+sq_both        = TWO IN THE DIAMOND
+sq_route       = H > D > F > D > H: 4 MOVES
+rh_lanterns    = LANTERNS
+rh_tram_go     = THE TRAM SETS OFF
+rh_tram_cue    = REC at the crossing boards
+rh_fest_go     = THE FESTIVAL BEGINS
+map_ride       = A RIDE: PLAY TO THE MUSIC
+tr_rain        = RAIN: WATCH YOUR BRAKES
+ex_board       = BOARD
+ex_beat        = ONLY THE BEAT
+ex_all         = PATCH EVERY LINE FIRST
+ex_done        = EVERY LINE THROUGH
+ex_through     = THROUGH
+ex_white       = WHITE: LINE
+ex_black       = BLACK: STATION
+rx_eye         = EYE
+rx_locked      = LOCKED ON
+rx_hold        = HOLD IT...
+rx_msg1        = ...SHINZO TO ALL STATIONS
+rx_msg2        = THE LOOP IS BROKEN
+rx_msg3        = DRIVE IT WHOLE. I AM BELOW.
+pa_contact     = CONTACT
+pa_wear        = WEAR
+pa_force       = FORCE
+pa_ready       = PLAY: SET OFF
+pa_again       = TOO MANY ARCS: AGAIN
+pa_down        = THE WIRE IS DOWN: AGAIN
+sq_table       = TIMETABLE
+sq_piece       = THE JUNCTION PLAYS
+sq_clash       = CONFLICT ON THE RED STEPS
+sq_four        = EVERY TRAIN: 4 MOVES
+sq_once        = CLEAN: ONE MORE LOOP
+tr_zone_hint2  = In time with the beat
+tr_zone_cruise = CRUISE: THE LINE HOLDS SPEED
+tr_zone_back   = BACK IN CONTROL
+tr_inf_cue     = NO LIMIT: FULL POWER
+sh_pull_n      = SEL: Pull out
+sh_push_n      = FX: Push into
+heart_reveal2  = IT CARRIED TIME
+heart_reveal   = IT NEVER CARRIED PASSENGERS
+heart_turn     = Turn it. Let every line in
+heart_foot     = KNOB turn the heart
+sig_key        = In D minor: every key fits
+sig_hearing    = Its song, as it will be
+sig_ask        = Keep this melody? SEL again.
+sig_sure       = SEL keep it  REC start again
+sig_foot       = PLAY hear  REC again  SEL keep
+sig_help       = Keys write it. PLAY hears its song. REC: again. SEL keeps it.
+sig_title      = YOUR MELODY
+heart_sub      = No timetable runs here
+heart_arrive   = SHINZO
+loop_sub       = Every station, every line
+loop_title     = THE LOOP IS WHOLE
+tr_voice_saw   = VOICE: SAW
+tr_voice_glass = VOICE: GLASS
+tr_voice_pwm   = VOICE: PWM
+tr_voice_brass = VOICE: BRASS
+tr_voice_epiano = VOICE: E.PIANO
+tr_voice_choir = VOICE: CHOIR
+unlock_voice   = SEQ changes the synth's voice.
+bp_voice       = VOICE
+menu_newtag    = NEW
+menu_continue  = CONTINUE
+menu_new       = NEW GAME
+menu_sure      = PLAY AGAIN: ERASE
+menu_enoden    = ENODEN
+menu_endless   = ENDLESS
+menu_foot      = KNOB choose  PLAY go
+wipe_ask       = RESET EVERYTHING?
+wipe_sure      = Every save, back to new
+wipe_keys      = PLAY reset  HOME no
+en_title       = ENODEN
+en_line        = THE LINE
+en_help        = Fujisawa to Kamakura. Stop at the marker.
+en_ctrl        = PLAY power  SEQ reverser  ARP doors, whistle  PRESETS power/brake  REC horn  FX dimmer, SEL call
+en_foot        = KNOB stretch  PLAY drive  HOME
+en_footer      = PRESETS NOTCH  REC  FX  SEL
+el_footer      = PRESETS  K1-K4 MIX  HOME STOP
+el_title       = ENDLESS
+el_help        = Drive the endless line. Your speed sets the beat.
+el_ctrl        = PRESETS power and brake  KEYS play along  K1-K4 drums bass pads arp  REC ARP horn, whistle  ALGORITHM change song
+dev_on         = DEVELOPER MODE: ALL OPEN
+dev_off        = DEVELOPER MODE OFF
+bp_foot        = PLAY: BACK TO THE MAP
+bp_new         = NEW
+bp_locked      = ?
+bp_synth       = SYNTH
+bp_call        = CALL
+bp_lights      = LAMPS
+bp_whistle     = WHISTLE
+bp_horn        = HORN
+bp_stopwatch   = WATCH
+bp_key         = KEY
+bp_title       = THE TRAIN
+unlock_line    = LINE OPEN TO
+unlock_synth   = KEYS play along. On the beat in breaks: +5.
+unlock_whistle = ARP at W boards: +1.
+sw_route       = ROUTE
+sw_to          = TO PLATFORM
+sw_clear       = ROUTE CLEAR
+sw_blocked     = BLOCKED
+sw_wrong       = WRONG PLATFORM
+sh_make        = MAKE UP IN A:
+sh_take        = WAGONS
+sh_moves       = moves
+sh_not_there   = NOT ENOUGH WAGONS
+sh_head_full   = HEADSHUNT FULL
+sh_full        = SIDING FULL
+rh_perfect     = PERFECT
+rh_good        = GOOD
+rh_ok          = OK
+rh_miss        = MISS
+rh_combo       = COMBO
+rh_to_pass     = to pass
+rh_ready       = Get ready
+rh_again       = Again: from the top
+title_new      = PLAY: Open the safe
+unlock_key     = PLAY drives any open line from the map.
+unlock_stopwatch = Arrive with 0-10 s to spare: +5.
+unlock_horn    = REC at horn points: +1.
+unlock_lights  = FX when a train comes the other way: +1.
+unlock_call    = SEL at yellow speed boards: +1.
+map_locked     = Solve the station first
+map_replay     = PLAY replay
+map_solve      = PLAY solve
+map_nothing    = Nothing left here
+map_restored   = STATION RESTORED
+map_secret     = A STATION WAKES BELOW
+map_foot       = KNOB choose  PLAY go  FX train
+map_foot_ws    = KNOB  PLAY go  FX train
+tr_prep_power  = PLAY: POWER ON
+tr_prep_reverser = SEQ: REVERSER F
+tr_prep_listen = LISTEN...
+tr_prep_copy   = PLAY IT BACK: KEYS
+tr_prep_again  = AGAIN...
+tr_prep_doors  = ARP: CLOSE DOORS
+tr_prep_closing = DOORS CLOSING
+tr_music_on    = MUSIC ON
+tr_paused      = PAUSED
+tr_resume      = PLAY: On again
+tr_sb_stop     = STOP
+tr_sb_time     = TIME
+tr_sb_events   = EVENTS
+tr_sb_zone     = ZONE
+tr_sb_speed    = SPEEDING
+tr_sb_eb       = EMERG. BRAKE
+tr_sb_total    = TOTAL
+tr_zone_in     = INTO THE ZONE
+tr_zone_hint   = Play a melody on the keys
+tr_zone_tag    = IN THE ZONE
+tr_zone_out    = IN THE ZONE
+tr_zone_pass   = THE ZONE PASSES
+tr_music_off   = MUSIC OFF
+tr_depart      = DEPART
+tr_overspeed   = OVER SPEED
+tr_emergency   = EMERGENCY BRAKE
+tr_cue_dim     = DIM [FX]
+tr_cue_bright  = BRIGHT [FX]
+tr_cue_fans    = HORN [REC]
+tr_cue_whistle = WHISTLE [ARP]
+tr_cue_check   = CHECK
+tr_thanks      = +1 THANKS!
+tr_no_horn     = -1 NO HORN
+tr_no_call     = -1 NO CALL
+tr_too_fast    = -1 TOO FAST
+tr_check_ok    = +1 CHECK OK
+tr_whistle_ok  = +1 WHISTLE
+tr_no_whistle  = -1 NO WHISTLE
+tr_dimmed      = +1 DIMMED
+tr_glare       = -1 GLARE
+tr_lights_low  = -1 LIGHTS LOW
+tr_perfect     = PERFECT
+tr_great       = GREAT
+tr_good        = GOOD
+tr_ok          = OK
+tr_poor        = POOR
+tr_overrun     = OVERRUN
+tr_on_time     = ON TIME
+tr_early       = EARLY
+tr_late        = LATE
+play_on        = PLAY: On
+home_again     = HOME again: to the title
+help_foot      = PLAY go  SAVE held: skip
+tut_power_t    = POWER AND BRAKE
+tut_power      = PRESETS right: power. Left: brake. Middle: coast.
+tut_limit_t    = SPEED LIMITS
+tut_limit      = The round sign is the limit. The numbers next to it show upcoming changes.
+tut_stop_t     = THE NEXT STATION
+tut_stop       = Stop the front on the marker. Get as close as possible.
+tut_score_t    = THE SCORE
+tut_score      = At the platform, you receive a score for your drive, F to S.
+tut_foot       = PLAY next
+keep_holding   = Keep holding: skip
+title_begin    = PLAY to begin
+title_choose   = PLAY  K1 chapter
+esc_rate       = RATE
+esc_beat       = BEAT
+esc_done       = RATE 0 s/d  BEAT 0.0 ms
+gt_hand        = HAND
+gt_turns       = TURNS
+gt_goal        = GOAL
+gt_motor_hand  = motor:hand
+gt_rusted      = A is rusted fast
+gt_part        = The hands part.
+gt_test        = TEST RUN
+mb_row         = ROW
+mb_true        = TRUE
+mb_memory      = Humming the old tune...
+mb_old_pin     = An old pin, fast
+mb_missing     = Missing: hum it
+bd_song        = SONG
+bd_your_turn   = Your turn
+bd_again       = Again...
+sf_now_left    = Now turn left
+sf_now_right   = Now right again
+sf_all_down    = All wheels down
+sf_no_catch    = Nothing catches
+sf_bolts_hold  = The bolts hold
+sf_turn_right  = Turn right >
+sf_turn_left   = < Turn left
+sf_wheel       = wheel
+sf_handle      = PLAY: Handle
+rd_ok          = TUNING CONFIRMED
+rd_refused     = TUNING REFUSED
+cb_moves       = moves
+mv_binds       = It binds here
+mv_slips       = It slips here
+mv_empty       = A hole is empty
+mw_tempo       = TEMPO
+mw_steps       = DRIVE
+mw_song        = WALTZ
+mw_bpm         = BPM
+mw_score       = score
+mw_cam_keys    = Copy: C left E right G turn
+mw_waltz       = The waltz from the box
+rb_cal         = GAUGES
+rb_rel         = RELAYS
+rb_vox         = VOICE
+rb_vox_hint    = Play a code on C..B
+rb_ok          = OPERATIONAL
+rb_says        = MALFUNCTION. REPAIR. NOW.
+gb_jam         = It jams!
+ws_title       = THE WORKSHOP
+ws_repairs     = repairs
+
+# ---------------------------------------------------------------------------------------------------------- ACT ONE
+
+[chapter prologue]
+title      = THE EMPTY STATION
+numeral    =
+in:  platform    | -     | Nobody had been to the station for years.
+in:  platform    | -     | There was no need. Nowhere to be. Nowhere to go.
+in:  platform    | -     | A world in stasis.
+in:  darktrain   | -     | But the door was unlocked.
+in:  keeper      | -     | It seemed to be inviting you in.
+[chapter courier]
+title      = THE DRIVER'S WATCH
+numeral    = III
+help_title = REGULATE THE WATCH
+help       = Make the trace flat and single, with the power in the green.
+controls   = K1 speed  K2 balance  K3 power
+footer     = K1 SPEED  K2 BALANCE  K3 POWER
+word       = CLEAR
+in:  pocketwatch | -     | The driver's pocket watch is silent and stuck on 23:47.
+out: pocketwatch | -     | Tick. Tock. Then it chimes a tune you don't know yet.
+[chapter music_box]
+title      = THE DEPARTURE JINGLE
+numeral    = V
+help_title = RE-PIN THE SONG
+help       = Set the missing pins, then press PLAY to crank.
+controls   = KNOB choose a row  KEYS set a pin  REC hum the tune  PLAY crank
+footer     = KNOB ROW  KEYS PIN  REC HUM
+word       = CLEAR
+out: map         | -     | The old station chime.
+in:  platform    | -     | A music box. Half its pins are gone. You listen to the ghost.
+[chapter strongbox]
+title      = THE STATION SAFE
+numeral    = I
+help_title = OPEN THE SAFE
+help       = Find three numbers. Press SEL where the click is loudest.
+controls   = KNOB turn the dial  SEL keep a number  PLAY open
+footer     = KNOB DIAL  SEL KEEP  PLAY OPEN
+word       = CLEAR
+# ---------------------------------------------------------------------------------------------------------- ACT TWO
+in:  office      | -     | The station safe. You could crack it.
+out: map         | -     | Inside, a map of the line. Something seemed to be missing in the middle.
+
+[chapter patrol]
+title      = THE FOG HORN
+numeral    = IV
+help_title = TUNE THE HORN
+help       = Turn each knob until its throb stops.
+controls   = K1-K4 tune reeds 1-4  C-F true notes  PLAY sound the horn
+footer     = K1-K4 TUNE  C-F TRUE  PLAY
+word       = CLEAR
+in:  harbour     | -     | A train fog horn, out of tune. It doesn't sound right.
+out: ghost       | -     | Something answers from the dark.
+[chapter margins]
+title      = THE DRIVER'S LOG
+in:  archive     | -     | A cipher hiding a message for the right person.
+out: archive     | -     | You ponder the message.
+numeral    = VI
+help_title = READ THE LOG
+help       = Turn each wheel until the words read.
+controls   = K1 wheel I  K2 wheel II  K3 wheel III
+footer     = K1 I  K2 II  K3 III
+word       = CLEAR
+
+[chapter cabinet]
+title      = THE KEY CABINET
+numeral    = II
+help_title = OPEN THE LOCK
+help       = Listen, then play each phrase back.
+controls   = C D E G A play back  PLAY hear again
+footer     = KEYS PLAY BACK  PLAY AGAIN
+word       = CLEAR
+in:  archive     | -     | The key cabinet. Its lock listens.
+out: cab         | -     | The train's key. The cab wakes, inviting you to drive.
+
+[chapter ring_door]
+title      = THE STRANGE DEVICE
+numeral    = IX
+help_title = OPEN THE DOOR
+help       = Drop the ball to the centre. Each knob turns two rings.
+controls   = K1 outer ring  K2 second ring  K3 third ring  K4 inner ring
+footer     = K1-K4 RINGS
+word       = CLEAR
+in:  depot       | -     | In the depot's back wall, a panel with four rings. You examine it.
+out: door        | -     | Something turning and the distant sound of flowing sand.
+out: keeper      | robot | BELOW PACIFIC, THE HEART.
+
+[chapter heart]
+title      = THE HEART OF THE LINE
+numeral    =
+in:  door        | -     | Beneath it all, something beats.
+in:  heart       | -     | Every station was a part of it. The line is the machine.
+in:  heart       | -     | The stations light, one by one.
+in:  sakura      | -     | The train runs once again.
+
+[chapter workshop]
+numeral    =
+title      = THE WORKSHOP
+help_title = THE DAILY ROBOTS
+help       = GAUGES: SELECT, then PRESETS, then ALGORITHM. RELAYS: light all twelve buttons. METERS warm as you near. VOICE: guess the code.
+footer     = HOLD HOME: leave
+word       = REPAIRED
+
+# ---------------------------------------------------------------------------------------------------------- CREDITS
+
+[credits]
+gold: THE END
+gap:
+gold: OBSCURA LINE
+text: by MammothCheese
+neon: an Eastlake Games production
+gap:
+neon: built on
+text: Dinghy, by zvenson
+gap:
+neon: on the platform of
+text: Felucca, by Leo Kuroshita
+text: and Hugelton Instruments
+text: and SLOOP, by isod89
+gap:
+neon: type
+text: Terminus
+gap:
+gap:
+text: thank you for listening
+
+# ----------------------------------------------------------------------------------- THE TRAIN (placeholders)
+
+[chapter ghost_signal]
+title      = THE GHOST SIGNAL
+in:  signalbox   | -     | Akari Heights' signal box. The receiver hums with four decades at once.
+out: signalbox   | robot | BOX 7, ALL YEARS: A DRIVER IS COMING.
+numeral    = XII
+help_title = FIND THE CONVERSATION
+help       = Tune one conversation across the decades.
+controls   = K1 the 1920s  K2 the 1950s  K3 the 1980s  K4 the 2010s  PLAY link
+footer     = K1-K4 DECADES  PLAY LINK
+word       = CLEAR
+
+[chapter negative]
+title      = THE NEGATIVE
+numeral    = XI
+help_title = PRINT THE PHOTO
+help       = Develop the negative, then sharpen the print.
+controls   = K1 exposure  K2 focus  K3 contrast  K4 development
+footer     = K1 EXP  K2 FOC  K3 CON  K4 DEV
+word       = CLEAR
+in:  archive     | -     | In Olympia's old waiting room, a box of glass negatives.
+out: map         | -     | A sign on the platform: SHINZO. THE HEART. There is no sign there now.
+
+[chapter exchange]
+title      = THE EXCHANGE
+numeral    = VIII
+help_title = PATCH THE LINES
+help       = Patch each line to the station that sounds the same.
+controls   = WHITE KEYS hear a line  BLACK KEYS hear a station  HOLD both patch  PLAY test
+footer     = HOLD WHITE+BLACK  PLAY TEST
+word       = CLEAR
+in:  signalbox   | -     | Crescent Bay's old exchange. Every station cut off from the rest.
+out: signalbox   | robot | LINES RESTORED. THE CAB HEARS THEM ALL: NEW VOICES.
+
+[chapter to_clockworks]         # placeholder words: the story is yours
+title      = TO PACIFIC
+help_title = DRIVE
+help       = Drive on. Stop on the marker.
+controls   = PRESETS power and brake  KEYS play along  SEQ reverser  ARP doors
+footer     = PRESETS NOTCH  KEYS  GLO
+word       = ARRIVED
+in:  cab         | -     | Cold brass, with a resonant hum that you match.
+
+[chapter to_harbour]            # placeholder words: the story is yours
+title      = TO MERCURY
+help_title = DRIVE
+help       = Turn PRESETS right for power and left to brake. Stop on the marker.
+controls   = PRESETS power and brake  KEYS play along  SEQ reverser  ARP doors
+footer     = PRESETS NOTCH  KEYS  GLO
+word       = ARRIVED
+in:  sakura      | -     | The cab hums.
+
+[chapter back_to_clockworks]    # placeholder words: the story is yours
+title      = UP TO THE LOOP
+help_title = DRIVE
+help       = Drive on. Stop on the marker.
+controls   = PRESETS power and brake  KEYS play along  SEQ reverser  ARP doors
+footer     = PRESETS NOTCH  KEYS  GLO
+word       = ARRIVED
+in:  tunnel      | -     | Morning on the branch.
+
+[chapter to_kawabe]             # placeholder words: the story is yours
+title      = TO MERIDIAN
+help_title = DRIVE
+help       = Drive on. Stop on the marker.
+controls   = PRESETS power and brake  KEYS play along  SEQ reverser  ARP doors
+footer     = PRESETS NOTCH  KEYS  GLO
+word       = ARRIVED
+in:  train       | -     | Meridian's lights, out of the dusk.
+
+[chapter to_archive]            # placeholder words: the story is yours
+title      = TO CHROME
+help_title = DRIVE
+help       = Drive on. Stop on the marker.
+controls   = PRESETS power and brake  KEYS play along  SEQ reverser  ARP doors
+footer     = PRESETS NOTCH  KEYS  GLO
+word       = ARRIVED
+in:  timetable   | -     | Departures: one train a night. --:--
+
+[chapter to_observatory]        # placeholder words: the story is yours
+title      = TO LIBERTY
+help_title = DRIVE
+help       = Drive on. Stop on the marker.
+controls   = PRESETS power and brake  KEYS play along  SEQ reverser  ARP doors
+footer     = PRESETS NOTCH  KEYS  GLO
+word       = ARRIVED
+in:  tunnel      | -     | In the dark of the tunnel, the message keeps turning over in your mind.
+
+[chapter signal_control]
+title      = THE SIGNAL CONTROL
+in:  signalbox   | -     | One screen still glows. Every route unset.
+out: signalbox   | -     | Signals clear.
+out: seatram     | -     | A vintage tram, varnish and brass, waiting by the sea. The bells are yours.
+numeral    = VII
+help_title = SET THE ROUTE
+help       = Route the train to the gold platform.
+controls   = C-A throw levers 1-6  PLAY run the train
+footer     = C-A LEVERS  PLAY RUN
+word       = CLEAR
+
+[chapter to_summit]             # a ride: the seaside tram (lines.txt ride = tram)
+title      = THE SEASIDE TRAM
+help_title = RING THE BELLS
+help       = Ring each bell as it reaches the line, on the beat.
+controls   = C D E bells
+footer     = KEYS BELLS
+word       = CLEAR
+
+[chapter to_depot]              # placeholder words: the story is yours
+title      = TO AVALON
+help_title = DRIVE
+help       = Drive on. Stop on the marker.
+controls   = PRESETS power and brake  KEYS play along  SEQ reverser  ARP doors
+footer     = PRESETS NOTCH  KEYS  GLO
+word       = ARRIVED
+in:  depot       | -     | The depot doors stand open.
+
+[chapter depot_yard]
+title      = THE DEPOT YARD
+numeral    = X
+help_title = MAKE UP THE TRAIN
+help       = Make siding A match the train shown.
+controls   = K1 choose a siding  K2 how many  SEL pull out  FX push in
+footer     = K1 K2  SEL PULL  FX PUSH
+word       = CLEAR
+in:  depot       | -     | MAKE UP THE FESTIVAL TRAM. - THE FOREMAN
+out: festtram    | -     | A festival tram, made up and hung with lanterns.
+
+[chapter to_sakurazaka]         # placeholder words: the story is yours
+title      = TO UNION
+help_title = DRIVE
+help       = Drive on. Stop on the marker.
+controls   = PRESETS power and brake  KEYS play along  SEQ reverser  ARP doors
+footer     = PRESETS NOTCH  KEYS  GLO
+word       = ARRIVED
+in:  sakura      | -     | Cherries in full flower.
+
+[chapter to_olympia]            # a ride: the festival tram (lines.txt ride = festival)
+title      = THE FESTIVAL TRAM
+help_title = DRUM THE LINE
+help       = Hit each drum as it reaches the line, on the beat.
+controls   = C big drum  D small drum  E rim
+footer     = KEYS C-E DRUMS
+word       = CLEAR
+
+[chapter to_shinmachi]          # placeholder words: the story is yours
+title      = HOME TO AKARI
+help_title = DRIVE
+help       = Drive on. Stop on the marker.
+controls   = PRESETS power and brake  KEYS play along  SEQ reverser  ARP doors
+footer     = PRESETS NOTCH  KEYS  GLO
+word       = ARRIVED
+in:  train       | -     | Every signal clears ahead of you.
+
+[chapter to_heart]              # placeholder words: the story is yours
+title      = UNDER PACIFIC
+help_title = DRIVE
+help       = Drive on. Stop on the marker.
+controls   = PRESETS power and brake  KEYS play along  SEQ reverser  ARP doors
+footer     = PRESETS NOTCH  KEYS  GLO
+word       = ARRIVED
+in:  door        | -     | The rails go on, down, under the station.
+
+# (the radio's and the junction's words, for when they come back)
+#
+# [chapter radio]
+# title      = THE BEACH RADIO
+# in:  harbour     | -     | A beach hut at the end of the tram line. A radio, every station at once.
+# out: observatory | robot | SHINZO TO ALL STATIONS. DRIVE THE LOOP WHOLE. I AM BELOW.
+# numeral    = VIII
+# help_title = TUNE IN
+# help       = Tune in the voice. Each step lights when right.
+# controls   = K1 frequency  K2 bandwidth  K3 gain  K4 notch
+# footer     = K1 FRQ  K2 BW  K3 GAIN  K4 HUM
+# word       = CLEAR
+#
+# [chapter junction]
+# title      = THE JUNCTION
+# in:  timetable   | -     | Union's junction: one diamond, every line through it.
+# out: sakura      | -     | The timetable plays itself. It sounds like a song.
+# numeral    = X
+# help_title = WRITE THE TIMETABLE
+# help       = Four moves per train. One train in the diamond at once. No two moves in a row.
+# controls   = K1 choose a train  WHITE KEYS set steps  SEL clear the row
+# footer     = K1 TRAIN  KEYS STEP  SEL CLEAR
+# word       = CLEAR
+#

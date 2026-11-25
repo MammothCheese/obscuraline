@@ -1,0 +1,226 @@
+# =====================================================================================================================
+#  OBSCURA LINE - THE CHAPTERS (from Mechanica Obscura's puzzles, with the train between the stations)
+# =====================================================================================================================
+#
+#  Every chapter of the game, IN PLAY ORDER. Each [block] is one chapter:
+#
+#      [chapter_id]                 lower case, digits, _   (its words live in script.txt under [chapter chapter_id])
+#      type        = escapement     which mechanism it uses (the list of types is at the end of this file)
+#      station     = clockworks     (any type) the station it belongs to, on the map (content/lines.txt)
+#      unlocks     = horn           (optional) what solving it adds to the train: key stopwatch horn whistle lights call synth voice
+#      opens       = leg_id ...     (optional) the lines it opens (both ways; a line no chapter opens is open once reached)
+#                                   (key: the map, and the train itself). The first chapter's station is where it starts
+#      setting     = value          that type's settings; leave one out and its default is used
+#
+#  Values:   a number           beat_ms     = 200
+#            a range            rate_error  = 4..11       (the game picks inside it each time: puzzles vary)
+#            a list             teeth       = 10 12 15 16
+#            several lines      tune        = 3 5 8 5 ...  (repeat the key: one entry a line; the game picks one)
+#
+#  To EDIT a puzzle:            change its settings here (and its words in script.txt).
+#  To ADD a puzzle of a type:   copy a block, give it a new id and place it where it should come in the story;
+#                               add a [chapter new_id] with its words to script.txt. Nothing else.
+#  To REMOVE or REORDER:        move or delete blocks (and their script.txt sections).
+#  A new TYPE of mechanism:     needs C code; see content/README.txt.
+#
+#  Then build as usual (./build.sh, or tests/run_host.sh on a computer). tools/content.py checks both files and
+#  stops with the file and line if something is wrong. `python3 tools/content.py --types` lists every type and
+#  every setting with its limits. At most 16 chapters.
+#
+# =====================================================================================================================
+
+[global]
+title_tune  = 3 5 8 5 4 6 5 0 3 5 7 6 5 0 8 0     # the title screen's music, once the music box has sung (tines 1..8, 0 rest)
+
+# ---------------------------------------------------------------- KURO: the end of the branch, where it starts
+
+# ---------------------------------------------------------------- KURO: the end of the branch, where it starts
+
+[prologue]
+type        = story
+station     = lighthouse
+
+[strongbox]
+type        = safe
+station     = lighthouse
+numbers     = 40
+wheels      = 3             # right, left, right
+near        = 2             # numbers either side of a gate that clunk fainter
+
+[cabinet]                   # Kuro's key cabinet: a sound lock; inside, the train's key
+type        = bird
+station     = lighthouse
+unlocks     = key   # the train's key: drive from the map
+notes       = 72 74 76 79 81
+rounds      = 3
+first_len   = 3
+show_rounds = 1
+
+[to_harbour]              # the train (lighthouse to harbour, content/lines.txt)
+type        = travel
+leg         = lighthouse_harbour
+
+[courier]                   # the driver's watch: a timegrapher (speed, balance, power)
+type        = watch
+station     = harbour
+unlocks     = stopwatch     # a feature of the train, from here on
+hold_ms     = 3000          # all three right this long
+
+# ------------------------------------------------------------------------------- MERCURY to PACIFIC and the loop
+
+# ------------------------------------------------------------------------------- MERCURY to PACIFIC and the loop
+
+[back_to_clockworks]      # the train (harbour to clockworks, content/lines.txt)
+type        = travel
+leg         = harbour_clockworks
+
+[patrol]
+type        = reeds
+station     = clockworks
+unlocks     = horn          # a feature of the train, from here on
+opens       = clockworks_kawabe         # the horn answered: the loop to Meridian
+chord       = 0 4 7 11      # major seventh
+chord       = 0 3 7 10      # minor seventh
+chord       = 0 4 7 9       # sixth
+chord       = 0 5 7 12      # suspended
+chord       = 0 3 7 12      # minor with octave
+root        = 55..60        # G3 .. C4
+error       = 50..240       # cents off, each reed
+step        = 10            # cents a detent
+
+[to_kawabe]               # the train (clockworks to kawabe, content/lines.txt)
+type        = travel
+leg         = clockworks_kawabe
+
+[music_box]
+type        = musicbox
+station     = kawabe
+unlocks     = synth         # a feature of the train, from here on
+opens       = kawabe_archive            # the waiting room sings again: on to Chrome
+tune        = 3 5 8 5 4 6 5 0 3 5 7 6 5 0 8 0      # Lantern Waltz
+tune        = 1 5 3 5 2 5 4 5 3 6 5 4 3 2 1 0      # The Winder's Round
+tune        = 8 7 6 5 6 5 4 3 4 2 7 5 8 0 0 0      # Falling Gears
+tune        = 3 0 3 4 5 0 3 0 6 5 4 3 2 0 1 0      # Under the Floor
+missing     = 5..6          # pins that fell out
+step_ms     = 270           # ms a row when cranked
+comb        = 72 74 76 77 79 81 83 84              # C D E F G A B C, an octave above the keys
+
+[to_archive]              # the train (kawabe to archive, content/lines.txt)
+type        = travel
+leg         = kawabe_archive
+
+[margins]
+type        = cipher
+station     = archive
+unlocks     = call          # a feature of the train, from here on
+opens       = archive_observatory   # the log read: on to Liberty
+message     = THE CLOCK RUNS SLOW
+message     = TIME IS FROZEN
+message     = TIME IS A LOOP
+message     = THE BEATING HEART
+message     = THE HOUR IS LATE
+shift       = 3..23
+
+[to_observatory]          # the train (archive to observatory, content/lines.txt)
+type        = travel
+leg         = archive_observatory
+
+[signal_control]            # Liberty's control room: set the routes
+type        = switches
+station     = observatory
+opens       = observatory_summit         # the routes set: the seaside tram to Crescent Bay
+rounds      = 3
+big         = 1             # the big board: six tracks, six levers
+
+[to_summit]               # THE SEASIDE TRAM: a ride, Liberty to Crescent Bay (a rhythm game: lines.txt ride = tram)
+type        = travel
+leg         = observatory_summit
+
+[exchange]                  # Crescent Bay's old telephone exchange: the stations talking again
+type        = exchange
+station     = summit
+opens       = observatory_depot   # the bay hears the line: on to Avalon
+unlocks     = voice   # the synth's other voices
+lines       = 6
+rounds      = 1
+
+[to_depot]                # the train (observatory to depot, content/lines.txt)
+type        = travel
+leg         = observatory_depot
+
+[ring_door]                 # a door in Avalon's depot wall, four rings
+type        = rings
+station     = depot
+unlocks     = whistle   # a feature of the train, from here on
+opens       = depot_sakurazaka   # the door opens the line: on to Union
+rings       = 4             # the ball falls through all four
+
+[to_sakurazaka]           # the train (depot to sakurazaka, content/lines.txt)
+type        = travel
+leg         = depot_sakurazaka
+
+[depot_yard]                # Union's sidings: make up the festival tram
+type        = shunting
+station     = sakurazaka
+opens       = sakurazaka_olympia   # the festival tram made up: it may run
+rounds      = 1
+
+[to_olympia]              # THE FESTIVAL TRAM: a ride, Union to Olympia (a rhythm game: lines.txt ride = festival)
+type        = travel
+leg         = sakurazaka_olympia
+
+[negative]                  # a glass negative in Olympia's old waiting room
+type        = photo
+station     = olympia
+unlocks     = lights   # the dimmer
+hold_ms     = 1200
+
+[to_shinmachi]            # the train (sakurazaka to shinmachi, content/lines.txt)
+type        = travel
+leg         = sakurazaka_shinmachi
+
+[ghost_signal]              # Akari Heights' signal box: one conversation across four decades
+type        = ghost
+station     = shinmachi
+opens       = shinmachi_clockworks   # the box answers: the loop closed
+channels    = 4
+
+[to_clockworks]           # the train (shinmachi to clockworks, content/lines.txt)
+type        = travel
+leg         = shinmachi_clockworks
+
+# --------------------------------------------------------------------------------------------- SHINZO: the heart
+
+# --------------------------------------------------------------------------------------------- SHINZO: the heart
+
+[to_heart]                # the train (shinmachi to heart, content/lines.txt)
+type        = travel
+leg         = clockworks_heart
+
+[heart]                     # the heart: story only
+type        = story
+station     = heart
+
+[workshop]
+type          = robot
+layout        = 4..7
+cal_turns     = 6
+relay_presses = 3..5
+code_len      = 3..4
+
+# (built, not in the story now: the radio and the junction; their blocks are kept here for testing)
+#
+# [radio]                     # Crescent Bay's beach hut: one voice under the noise
+# type        = radio
+# station     = summit
+# unlocks     = voice         # the synth's second voice, GLASS, as the radio heard it
+# opens       = observatory_depot         # the message: drive on, to Avalon
+# lock_ms     = 2000
+#
+# [junction]                  # Union's junction: the timetable as a sequencer
+# type        = sequencer
+# station     = sakurazaka
+# opens       = sakurazaka_olympia        # the timetable plays: the festival tram may run
+# trains      = 2
+# rounds      = 2
+#

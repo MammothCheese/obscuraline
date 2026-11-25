@@ -1,0 +1,10 @@
+{
+  "what": "A mysterious train adventure built around the FM-1's keys, knobs and sound engine, blending driving, mechanical puzzles, synth jams and rhythm games. Journey around a synthwave loop, repair forgotten machines through sound and logic, and uncover the mystery at its heart.",
+  "author": "MammothCheese",
+  "kinds": [
+    "other"
+  ],
+  "image": "docs/card/card_1.png",
+  "color": "#FF3CC8",
+  "sounds": "own: every sound is synthesised in code; the WAVs in docs/audio are recordings of the firmware's own output"
+}

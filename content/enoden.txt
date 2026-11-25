@@ -1,0 +1,269 @@
+# =====================================================================================================================
+#  OBSCURA LINE - THE ENODEN (the title's ENODEN, once the game is finished): the SHONAN COAST LINE from DENSHA FM1
+# =====================================================================================================================
+#
+#  Fujisawa to Kamakura along the coast: fifteen stations, single track with passing loops, street running, the sea
+#  at arm's length (the Enoshima Electric Railway's stations and distances, 10.0 km). Same format as lines.txt;
+#  driven one way, no synth: the train as a train. `time` = the autopilot's time + 5 s (python tests/retime.py enoden).
+
+[station fujisawa]
+name     = FUJISAWA
+pos      = 2 30
+style    = town
+
+[station ishigami]
+name     = ISHIGAMI
+pos      = 8 30
+style    = enoden
+
+[station yanagikoji]
+name     = YANAGIKOJI
+pos      = 15 33
+style    = enoden
+
+[station kugenuma]
+name     = KUGENUMA
+pos      = 22 36
+style    = enoden
+
+[station shonan_kaigan_koen]
+name     = SHONAN-KAIGAN-KOEN
+pos      = 29 30
+style    = enoden
+
+[station enoshima]
+name     = ENOSHIMA
+pos      = 36 33
+style    = enoden
+
+[station koshigoe]
+name     = KOSHIGOE
+pos      = 43 36
+style    = enoden
+
+[station kamakura_kokomae]
+name     = KAMAKURA-KOKOMAE
+pos      = 50 30
+style    = enoden
+
+[station shichirigahama]
+name     = SHICHIRIGAHAMA
+pos      = 56 33
+style    = enoden
+
+[station inamuragasaki]
+name     = INAMURAGASAKI
+pos      = 63 36
+style    = enoden
+
+[station gokurakuji]
+name     = GOKURAKUJI
+pos      = 70 30
+style    = enoden
+
+[station hase]
+name     = HASE
+pos      = 77 33
+style    = enoden
+
+[station yuigahama]
+name     = YUIGAHAMA
+pos      = 84 36
+style    = enoden
+
+[station wadazuka]
+name     = WADAZUKA
+pos      = 91 30
+style    = enoden
+
+[station kamakura]
+name     = KAMAKURA
+pos      = 98 33
+style    = town
+
+[leg fujisawa_ishigami]
+line     = ENODEN
+from     = fujisawa
+to       = ishigami
+dist     = 600
+time     = 101
+sky      = day
+limit    = 0:25 200:40
+curve    = 0:0 60:-45 180:0
+zone     = 0:town 220:houses
+event    = 160:check:25
+crossing = 330 470
+
+[leg ishigami_yanagikoji]
+line     = ENODEN
+from     = ishigami
+to       = yanagikoji
+dist     = 600
+time     = 86
+sky      = day
+limit    = 0:40
+curve    = 0:10 300:0
+zone     = 0:houses 380:town
+event    = 300:fans
+crossing = 120 260 420
+
+[leg yanagikoji_kugenuma]
+line     = ENODEN
+from     = yanagikoji
+to       = kugenuma
+dist     = 700
+time     = 98
+sky      = day
+loop     = 1
+limit    = 0:45 450:30
+curve    = 0:0 420:35 560:0
+grade    = 0:0 150:-8 350:0
+zone     = 0:town 200:river 260:houses 550:town
+event    = 450:check:30 650:oncoming:0
+crossing = 90 330
+
+[leg kugenuma_shonan_kaigan_koen]
+line     = ENODEN
+from     = kugenuma
+to       = shonan_kaigan_koen
+dist     = 800
+time     = 99
+sky      = day
+limit    = 0:45
+curve    = 0:-12 300:0 600:8
+zone     = 0:houses 550:town
+event    = 250:fans
+crossing = 150 260 410 560
+
+[leg shonan_kaigan_koen_enoshima]
+line     = ENODEN
+from     = shonan_kaigan_koen
+to       = enoshima
+dist     = 600
+time     = 98
+sky      = day
+loop     = 1
+limit    = 0:45 350:25
+curve    = 0:0 380:-50 470:0
+zone     = 0:houses 420:town
+event    = 350:check:25 550:oncoming:0
+crossing = 200 320
+
+[leg enoshima_koshigoe]
+line     = ENODEN
+from     = enoshima
+to       = koshigoe
+time     = 179
+sky      = day
+dist     = 600
+limit    = 0:15 120:20 520:30
+curve    = 0:60 80:0 400:-20 470:0
+zone     = 0:town 70:street 520:town
+event    = 40:check:15 300:fans
+
+[leg koshigoe_kamakura_kokomae]
+line     = ENODEN
+from     = koshigoe
+to       = kamakura_kokomae
+dist     = 800
+time     = 107
+sky      = day
+limit    = 0:40
+curve    = 0:-15 200:0 500:12 650:0
+zone     = 0:town 150:houses 600:sea
+event    = 710:fans
+crossing = 120 350 500 760
+
+[leg kamakura_kokomae_shichirigahama]
+line     = ENODEN
+from     = kamakura_kokomae
+to       = shichirigahama
+time     = 109
+sky      = day
+dist     = 900
+limit    = 0:45 600:40
+curve    = 0:0 400:-8 650:0
+zone     = 0:sea 780:houses
+event    = 250:fans 400:oncoming:0 600:check:40
+crossing = 800
+
+[leg shichirigahama_inamuragasaki]
+line     = ENODEN
+from     = shichirigahama
+to       = inamuragasaki
+time     = 137
+sky      = dawn
+loop     = 1
+dist     = 1200
+limit    = 0:45 900:40
+curve    = 0:6 300:0 700:-10 900:0
+zone     = 0:houses 150:sea 950:town
+event    = 300:fans 1150:oncoming:0
+crossing = 600 1050
+
+[leg inamuragasaki_gokurakuji]
+line     = ENODEN
+from     = inamuragasaki
+to       = gokurakuji
+time     = 122
+sky      = dawn
+dist     = 800
+limit    = 0:45 550:25
+curve    = 0:0 250:15 450:0 550:-30 700:0
+grade    = 0:0 200:20 600:0
+zone     = 0:houses 250:country 650:town
+event    = 550:check:25
+crossing = 150
+
+[leg gokurakuji_hase]
+line     = ENODEN
+from     = gokurakuji
+to       = hase
+time     = 98
+sky      = dawn
+loop     = 1
+dist     = 700
+limit    = 0:35
+curve    = 0:-10 250:0 500:10
+grade    = 0:-20 350:0
+zone     = 0:country 80:tunnel 290:country 350:houses 550:town
+event    = 400:fans 650:oncoming:0
+crossing = 450 580
+
+[leg hase_yuigahama]
+line     = ENODEN
+from     = hase
+to       = yuigahama
+time     = 86
+sky      = sunset
+dist     = 600
+limit    = 0:40
+curve    = 0:0 250:18 400:0
+zone     = 0:houses 420:town
+event    = 150:fans
+crossing = 180 360
+
+[leg yuigahama_wadazuka]
+line     = ENODEN
+from     = yuigahama
+to       = wadazuka
+time     = 56
+sky      = sunset
+dist     = 300
+limit    = 0:40 180:30
+zone     = 0:houses
+event    = 180:check:30
+crossing = 80 200
+
+[leg wadazuka_kamakura]
+line     = ENODEN
+from     = wadazuka
+to       = kamakura
+dist     = 800
+time     = 118
+sky      = sunset
+limit    = 0:40 600:25
+curve    = 0:0 350:-14 500:0 650:20 740:0
+zone     = 0:houses 450:town
+event    = 300:fans 600:check:25
+crossing = 120 280 420

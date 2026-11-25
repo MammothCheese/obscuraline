@@ -1,0 +1,118 @@
+# Obscura Line (from Dinghy's workflow): build the packages on GitHub on every push, run the host tests and
+# the walkthrough, keep the .fwsc and the screenshots as artifacts; on a tag vX.Y publish the release with
+# a build attestation (actions/attest-build-provenance): the Firmware Hub shows "Built from source" for these files.
+# The JieLi toolchain comes from pkgman.jieliapp.com (tools/get_toolchain.sh), the AC79 SDK from gitee.com, as in
+# sloopDX's and OberVave's workflows.
+name: build
+
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  firmware:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write          # the release on a tag
+      id-token: write          # the attestation's signing identity
+      attestations: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Python packages
+        run: python3 -m pip install Pillow numpy
+
+      - name: The content compiles (content/puzzles.txt, content/script.txt)
+        run: |
+          python3 tools/content.py
+          git diff --stat --exit-code firmware/gen/mo_content.h || echo "::warning::mo_content.h was out of date with content/*.txt: rebuilt from them"
+
+      - name: The baked art is up to date (tools/style/bake.py -> firmware/gen/mo_art.h)
+        run: |
+          python3 tools/style/bake.py
+          git diff --stat --exit-code firmware/gen/mo_art.h || echo "::warning::mo_art.h differs from a fresh bake (Pillow version?): the committed one is built"
+          git checkout -- firmware/gen/mo_art.h
+
+      - name: JieLi toolchain (pkgman.jieliapp.com)
+        run: sh tools/get_toolchain.sh
+
+      - name: JieLi AC79 SDK (three files of it are placed in the package)
+        run: |
+          for i in 1 2 3; do                     # (gitee.com drops a clone now and then: try again)
+            git clone --depth 1 --branch AC79NN_SDK_V1.2.1_2023-12-13 \
+                https://gitee.com/Jieli-Tech/fw-AC79_AIoT_SDK.git ~/fw-AC79_AIoT_SDK && break
+            rm -rf ~/fw-AC79_AIoT_SDK
+            sleep 20
+          done
+          test -d ~/fw-AC79_AIoT_SDK
+
+      - name: Build the FM-1 package
+        run: sh build.sh
+
+      - name: Build the SMK-37 packages (not yet tried on an SMK-37)
+        continue-on-error: true
+        run: |
+          BOARD=smk37 sh build.sh
+          BOARD=smk37 MODEL=elite sh build.sh
+          BOARD=smk37 MODEL=mke sh build.sh
+          sh build.sh                            # (the FM-1 last again: the tests read its intermediates)
+
+      - name: Host tests
+        run: sh tests/run_tests.sh
+
+      - name: The daily robots and gear boards, solved as a player would (tests/robot_test.c)
+        run: |
+          mkdir -p build/host
+          cc -O2 -DDINGHY_HOST -Dmain=host_main -Ifirmware/hal -Ifirmware/src -Ifirmware/gen -o build/host/robot_test tests/robot_test.c
+          build/host/robot_test 7000
+
+      - name: The whole game on the host (every chapter and the Workshop, screenshots)
+        run: |
+          python3 tests/walkthrough.py
+          sh tests/run_host.sh tests/walkthrough.txt
+          mkdir -p build/host/ws && cp build/host/obscura-*.png build/host/ws/ 2>/dev/null; sh tests/run_host.sh tests/workshop.txt   # the daily robots
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: obscura-screens
+          path: |
+            build/host/obscura-*.png
+            build/host/obscura.wav
+
+      - name: Release packages (tags only)
+        if: github.ref_type == 'tag'
+        run: |
+          V="${GITHUB_REF_NAME#v}"
+          sh build.sh --release "$V"
+          BOARD=smk37 sh build.sh --release "$V" || true
+          sh build.sh --release "$V"
+          ls -l build/obscura-"$V"*.fwsc
+          (cd build && sha256sum obscura-"$V"*.fwsc > SHA256SUMS)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: obscura-fwsc
+          path: build/obscura*.fwsc
+          if-no-files-found: error
+
+      - name: Attest the packages (tags only)
+        if: github.ref_type == 'tag'
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: build/obscura-[0-9]*.fwsc
+
+      - name: Release (tags only)
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            build/obscura-[0-9]*.fwsc
+            build/SHA256SUMS
+          generate_release_notes: true
