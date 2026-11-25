@@ -1,5 +1,5 @@
-# Obscura Line (from Dinghy's workflow): build the packages on GitHub on every push, run the host tests and
-# the walkthrough, keep the .fwsc and the screenshots as artifacts; on a tag vX.Y publish the release with
+# Obscura Line (from Dinghy's workflow): build the FM-1 package on GitHub on every push, run the host tests and
+# the walkthrough, keep the .fwsc as an artifact; on a tag vX.Y publish the release with
 # a build attestation (actions/attest-build-provenance): the Firmware Hub shows "Built from source" for these files.
 # The JieLi toolchain comes from pkgman.jieliapp.com (tools/get_toolchain.sh), the AC79 SDK from gitee.com, as in
 # sloopDX's and OberVave's workflows.
@@ -56,14 +56,6 @@ jobs:
       - name: Build the FM-1 package
         run: sh build.sh
 
-      - name: Build the SMK-37 packages (not yet tried on an SMK-37)
-        continue-on-error: true
-        run: |
-          BOARD=smk37 sh build.sh
-          BOARD=smk37 MODEL=elite sh build.sh
-          BOARD=smk37 MODEL=mke sh build.sh
-          sh build.sh                            # (the FM-1 last again: the tests read its intermediates)
-
       - name: Host tests
         run: sh tests/run_tests.sh
 
@@ -73,25 +65,16 @@ jobs:
           cc -O2 -DDINGHY_HOST -Dmain=host_main -Ifirmware/hal -Ifirmware/src -Ifirmware/gen -o build/host/robot_test tests/robot_test.c
           build/host/robot_test 7000
 
-      - name: The whole game on the host (every chapter and the Workshop, screenshots)
+      - name: The whole game on the host (every chapter and the Workshop)
         run: |
           python3 tests/walkthrough.py
           sh tests/run_host.sh tests/walkthrough.txt
-          mkdir -p build/host/ws && cp build/host/obscura-*.png build/host/ws/ 2>/dev/null; sh tests/run_host.sh tests/workshop.txt   # the daily robots
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: obscura-screens
-          path: |
-            build/host/obscura-*.png
-            build/host/obscura.wav
+          sh tests/run_host.sh tests/workshop.txt   # the daily robots
 
       - name: Release packages (tags only)
         if: github.ref_type == 'tag'
         run: |
           V="${GITHUB_REF_NAME#v}"
-          sh build.sh --release "$V"
-          BOARD=smk37 sh build.sh --release "$V" || true
           sh build.sh --release "$V"
           ls -l build/obscura-"$V"*.fwsc
           (cd build && sha256sum obscura-"$V"*.fwsc > SHA256SUMS)
