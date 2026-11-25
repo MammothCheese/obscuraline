@@ -866,7 +866,7 @@ static void tglow(int32_t x0, int32_t y0, int32_t x1, int32_t y1, uint16_t c, ui
 
 /* sprites */
 enum { TP_BOX, TP_TREE, TP_MAST, TP_LIMIT, TP_STOP, TP_NAME, TP_PERSON, TP_PORTAL, TP_POST, TP_TRAIN, TP_CHECK,
-       TP_FAN, TP_XING, TP_CAR, TP_LAMP, TP_WHISTLE, TP_SMOKE, TP_ROCK, TP_SHELTER, TP_CRANE, TP_PARASOL, TP_GARLAND, TP_STALL, TP_BUSH, TP_CONE };
+       TP_FAN, TP_XING, TP_CAR, TP_LAMP, TP_WHISTLE, TP_SMOKE, TP_ROCK, TP_SHELTER, TP_CRANE, TP_PARASOL, TP_GARLAND, TP_STALL, TP_BUSH, TP_CONE, TP_TORII };
 typedef struct { int32_t z; int16_t type, x0, x1, h0, h1; uint16_t c, arg; } tspr_t;
 #define TV_NSPR 190u
 static tspr_t tspr[TV_NSPR];
@@ -883,6 +883,20 @@ static int tr_in_loop(int32_t wz)
 {
     int32_t d = (int32_t)tr.L->dist * 1000;
     return tr.L->loop && wz > d - 160000 && wz < d + 60000;
+}
+static int tr_from_is(const char *n)           /* the leg starts at this station (by name; no libc on the device) */
+{
+    const char *a = tr_names[tr.L->st_from];
+    while (*a && *a == *n) { a++; n++; }
+    return *a == *n;
+}
+static int tr_in_cutting(int32_t m)            /* the Enoden: in the cutting before a tunnel (metres) */
+{
+    uint32_t i;
+    if (tr_mode != TRM_ENODEN) return 0;
+    for (i = 1; i < tr.L->nzon; i++)
+        if (tr.L->zon[i].v == TZ_TUNNEL && m >= (int32_t)tr.L->zon[i].at - 70 && m < (int32_t)tr.L->zon[i].at) return 1;
+    return 0;
 }
 static int tr_at_xing(int32_t wz)
 {
@@ -921,6 +935,8 @@ static void tr_sprites(void)
             int32_t sgn = side ? 1 : -1, z = (int32_t)lot * 16000 + (int32_t)(h & 7u) * 1000 - pmm, wz = (int32_t)lot * 16, rx = side ? tR2 : 0;
             if (!side && wz > dist - plat - 15 && wz < dist + 30) continue;
             if (side && z0 == TZ_SEA) continue;
+            if (tr_in_cutting(wz) || tr_in_cutting(wz + 8)) continue;   /* (the Enoden's cutting: walls, nothing else) */
+            if (!side && tr_mode == TRM_ENODEN && tr.L->nxing && tr_from_is("GOKURAKUJI") && wz > (int32_t)tr.L->xing[0] - 4 && wz < (int32_t)tr.L->xing[0] + 26) continue;   /* (the shrine's grounds, open to the line) */
             if (tr_mode == TRM_ENODEN && (z0 == TZ_HOUSES || z0 == TZ_COUNTRY || z0 == TZ_TOWN) && z < 150000 && ((h >> 27) % 3u) != 0u) {
                 static const uint16_t AJISAI[4] = {RGB(110, 140, 230), RGB(150, 110, 210), RGB(90, 170, 230), RGB(200, 120, 190)};
                 int32_t bx = (z0 == TZ_HOUSES ? 1500 : 2500) + (int32_t)((h >> 2) & 3u) * 120 + rx, bw = (z0 == TZ_HOUSES ? 800 : 1300) + (int32_t)((h >> 5) & 3u) * 200;   /* (the alleys: inside the walls, by the rail) */
@@ -967,7 +983,9 @@ static void tr_sprites(void)
                     tspr_add(z - 8000, TP_LAMP, sgn * 3000 - 80, sgn * 3000 + 80, 0, 4800, RGB(40, 34, 50), 0);
             } else if (z0 == TZ_HOUSES) {
                 int32_t x0 = 2600 + (int32_t)((h >> 4) & 3u) * 500 + rx, w = 6000 + (int32_t)((h >> 8) & 3u) * 1000;
-                tspr_add(z, TP_BOX, sgn < 0 ? -x0 - w : x0, sgn < 0 ? -x0 : x0 + w, 0, 4200 + (int32_t)((h >> 12) & 7u) * 300, TR_BLD[(h >> 24) % 6u], 2);
+                if (tr_mode == TRM_ENODEN && (h >> 24) % 3u == 0u)   /* the Enoden: an old wooden house, two storeys of brown boards */
+                    tspr_add(z, TP_BOX, sgn < 0 ? -x0 - w : x0, sgn < 0 ? -x0 : x0 + w, 0, 5200 + (int32_t)((h >> 12) & 3u) * 300, (h >> 26) & 1u ? RGB(112, 76, 58) : RGB(128, 92, 70), 8);
+                else tspr_add(z, TP_BOX, sgn < 0 ? -x0 - w : x0, sgn < 0 ? -x0 : x0 + w, 0, 4200 + (int32_t)((h >> 12) & 7u) * 300, TR_BLD[(h >> 24) % 6u], 2);
                 if ((h >> 16) & 1u)
                     tspr_add(z - 6000, TP_TREE, sgn * (x0 + 800) - 900, sgn * (x0 + 800) + 900, 0, 4000, RGB(240, 120, 190), 1);
             } else if (z0 == TZ_INDUSTRIAL) {          /* warehouses, chimneys smoking, a crane */
@@ -1044,6 +1062,11 @@ static void tr_sprites(void)
         int32_t z = (int32_t)tr.L->xing[i] * 1000 - 3800 - pmm;
         tspr_add(z, TP_XING, -2900, -2700, 0, 2600, RGB(30, 30, 30), 0);
         tspr_add(z, TP_XING, 2700 + tR2, 2900 + tR2, 0, 2600, RGB(30, 30, 30), 1);
+    }
+    if (tr_mode == TRM_ENODEN && tr.L->nxing && tr_from_is("GOKURAKUJI")) {   /* the Goryo shrine: its stone torii by the first crossing */
+        int32_t z = (int32_t)tr.L->xing[0] * 1000 + 9000 - pmm;
+        tspr_add(z, TP_TORII, -8600, -4200, 0, 4600, RGB(168, 164, 154), 0);
+        tspr_add(z + 1500, TP_TREE, -12500, -6500, 0, 9000, RGB(40, 96, 56), 0);   /* its old camphor tree */
     }
     for (i = 1; i < (int32_t)tr.L->nzon; i++)
         if (tr.L->zon[i].v == TZ_TUNNEL)
@@ -1126,6 +1149,13 @@ static void tspr_draw(const tspr_t *s)
                     uint32_t hh = th32((uint32_t)(x * 7 + y));
                     trect(x, y, x + (sx + 1) / 2, y + (sy + 1) / 2, !(hh & 3u) && tp->lit ? c : (hh & 8u) ? wc2 : wc);
                 }
+        }
+        if (s->arg == 8u) {                     /* a wooden house: vertical boards, a dark tiled roof with wide eaves */
+            int32_t k, rh = h / 3 + 1, ew = w / 10 + 1;
+            uint16_t bc = TSW(tlit(mix565(s->c, RGB(30, 20, 16), 70), z, 0)), rc = TSW(tlit(RGB(58, 60, 70), z, 0)), rc2 = TSW(tlit(RGB(84, 86, 96), z, 0));
+            for (k = xa + 2; k < xb; k += 3) trect(k, ya, k + 1, yb, bc);
+            for (k = 0; k < rh; k++) tspan(ya - rh + k, xa - ew + (rh - k) * (w / 2) / (rh * 2) , xb + ew - (rh - k) * (w / 2) / (rh * 2), k & 1 ? rc : rc2);
+            trect(xa - ew, ya + h / 2 - 1, xb + ew, ya + h / 2 + (h > 30), rc);   /* the eave between the storeys */
         }
         if (s->arg == 2) {                      /* a roof */
             int32_t k, rh = h / 2 + 1;
@@ -1239,6 +1269,19 @@ static void tspr_draw(const tspr_t *s)
             for (k = 0; k <= (w > 3); k++) { tline(cx2 + k, ya + bl, cx2 - bl + k, ya, c); tline(cx2 + k, ya + bl, cx2 + bl + k, ya, c); }
         }
         break;
+    case TP_TORII: {                            /* a stone torii: two pillars, the tie beam through them, the top beam's ends turned up */
+        int32_t pw = w / 9 + 1, k, kh = h / 10 + 1;
+        uint16_t dc = TSW(tlit(mix565(s->c, 0, 60), z, 0));
+        trect(xa + w / 8, ya + kh, xa + w / 8 + pw, yb, c);
+        trect(xb - w / 8 - pw, ya + kh, xb - w / 8, yb, c);
+        trect(xa + w / 16, ya + h / 4, xb - w / 16, ya + h / 4 + kh * 2 / 3 + 1, c);   /* the nuki */
+        trect(xa, ya + 1, xb, ya + kh + 1, c);                                        /* the kasagi */
+        trect(xa + w / 20, ya + kh, xb - w / 20, ya + kh + kh / 2 + 1, dc);           /* the shimaki under it */
+        for (k = 0; k < w / 10 + 1; k++) { tspan(ya - 1 + 0, xa - k / 3, xa + k, c); }   /* the ends, turned up */
+        trect(xa - 1, ya - 1, xa + w / 10, ya + 1, c); trect(xb - w / 10, ya - 1, xb + 1, ya + 1, c);
+        trect((xa + xb) / 2 - pw / 2, ya + kh, (xa + xb) / 2 + pw / 2 + 1, ya + h / 4, c);   /* the gakuzuka */
+        break;
+    }
     case TP_CONE: {                             /* a green barrier cone by the road, a bar to the next */
         int32_t cx2 = (xa + xb) / 2, k;
         uint16_t gc = TSW(tlit(RGB(40, 170, 110), z, 0)), gc2 = TSW(tlit(RGB(230, 240, 235), z, 0));
@@ -1344,11 +1387,17 @@ static void tspr_draw(const tspr_t *s)
         trect(xa, ya, hx0, yb, c);
         trect(hx1, ya, xb, yb, c);
         trect(hx0, ya, hx1, hy, c);
-        if (s->arg) {                           /* the Gokurakuji tunnel: a brick mouth, a stone rim, the hill's green over it */
-            int32_t bt = tjpx(500, jj8) + 1;
-            trect(hx0 - bt, hy - bt, hx0, yb, TSW(tlit(RGB(140, 70, 54), z, 0)));
-            trect(hx1, hy - bt, hx1 + bt, yb, TSW(tlit(RGB(140, 70, 54), z, 0)));
-            trect(hx0 - bt, hy - bt * 2, hx1 + bt, hy, TSW(tlit(RGB(170, 160, 140), z, 0)));
+        if (s->arg) {                           /* the Gokurakuji tunnel: a round-topped brick arch, a concrete face over it, the hill's green */
+            int32_t bt = tjpx(600, jj8) + 1, x, rr = (hx1 - hx0) / 2, mx = (hx0 + hx1) / 2, fw = tjpx(1600, jj8) + 1, ft = hy - bt * 3;
+            uint16_t bc = TSW(tlit(RGB(150, 76, 58), z, 0)), bc2 = TSW(tlit(RGB(120, 60, 46), z, 0)), cc = TSW(tlit(RGB(176, 170, 158), z, 0));
+            trect(hx0 - fw, ft, hx0, yb, bc); trect(hx1, ft, hx1 + fw, yb, bc); trect(hx0, ft, hx1, hy, bc);   /* the brick face round the mouth */
+            trect(hx0 - fw, ft - bt * 2, hx1 + fw, ft, cc);                    /* the concrete over it */
+            for (x = hx0 - fw; x < hx1 + fw; x += 6) trect(x, ft, x + 1, (x >= hx0 && x < hx1) ? hy : yb, bc2);   /* the courses */
+            for (x = hx0; x < hx1; x++) {       /* the opening's round top: brick in its corners, a light ring */
+                int32_t dx = x - mx, dd = dx * dx < rr * rr ? dx * dx : rr * rr, top = hy + rr - (int32_t)mo_isqrt((uint32_t)(rr * rr - dd));
+                if (top > hy) trect(x, hy, x + 1, top, bc);
+                trect(x, top - 1, x + 1, top + (rr > 20), cc);
+            }
         } else trect(hx0 - 2, hy - 2, hx1 + 2, hy, TSW(tp->neon2));   /* a neon strip over the mouth */
         break;
     }
@@ -1542,7 +1591,8 @@ static void tr_view(void)
             if (mx < -100) mx += 360;
             for (k = -60; k <= 60; k++) {
                 int32_t ht = 52 - (k < 0 ? -k : k) * 52 / 60 - ((k < 0 ? -k : k) < 8 ? 0 : 0), y;
-                uint16_t mc = TSW(mix565(mix565(tp->hill_near, tp->hill_far, 150), tp->top, 50)), sc = TSW(mix565(RGB(255, 230, 250), tp->hor, 60));
+                uint16_t mc = TSW(tr_mode == TRM_ENODEN ? mix565(RGB(96, 124, 176), tp->hor, 90) : mix565(mix565(tp->hill_near, tp->hill_far, 150), tp->top, 50)),
+                         sc = TSW(tr_mode == TRM_ENODEN ? mix565(RGB(250, 250, 255), tp->hor, 50) : mix565(RGB(255, 230, 250), tp->hor, 60));   /* (the Enoden: Fuji blue with distance, the snow white) */
                 if (mx + k < 0 || mx + k >= xmax) continue;
                 for (y = TV_HY - ht; y < TV_HY; y++) tvb[y * TV_W + mx + k] = (y < TV_HY - ht + 4 + ht / 5 + ((k * 7) & 3)) ? sc : TSW(mix565(swap16(mc), tp->hor, (uint32_t)(y - (TV_HY - ht)) * 2u));   /* (the haze thickens toward its foot) */
             }
@@ -1707,6 +1757,22 @@ static void tr_view(void)
             } else pcy2 = 0;
             ptop = top; pxp = xe;
         } else ptop = 0;
+        {   /* the Enoden's cutting before the Gokurakuji tunnel: a stone retaining wall on the right, weep holes in rows; the hill's green bank on the left */
+            static int32_t cxl, cxr;
+            if (tr_in_cutting(wz / 1000) && zn != TZ_TUNNEL) {
+                int32_t xl = cx + tjpx(-2600, jj8), xr = cx + tjpx(2600, jj8), tl = yg - tjpx(3800, jj8), trr = yg - tjpx(4600, jj8);
+                uint16_t sc = TSW(tlit(RGB(120, 118, 112), z, 0)), gcol = TSW(tlit(((wz / 5000) & 1) ? RGB(70, 110, 60) : RGB(60, 98, 54), z, 0));
+                if (cxl) {
+                    trect(xl < cxl ? xl : cxl, tl, (xl < cxl ? cxl : xl) + 1, yg + 1, gcol);
+                    trect(xr < cxr ? xr : cxr, trr, (xr < cxr ? cxr : xr) + 1, yg + 1, sc);
+                    if (r && wz / 1500 != (pmm + tz_mm[r - 1]) / 1500) {   /* a column of weep holes, every 1.5 m */
+                        int32_t k3, hd = tjpx(80, jj8) + 1;
+                        for (k3 = 1; k3 < 5; k3++) { int32_t yy = yg - tjpx(k3 * 900, jj8); trect(cxr < xr ? cxr : xr, yy, (cxr < xr ? xr : cxr) + 1, yy + hd + 1, TSW(tlit(RGB(46, 44, 40), z, 0))); }
+                    }
+                }
+                cxl = xl; cxr = xr;
+            } else cxl = 0;
+        }
         if (tr_mode == TRM_ENODEN) {            /* the crossings' barriers: striped arms down, from each post across the road */
             static int32_t bxl, bxr, bby;
             uint32_t q;
