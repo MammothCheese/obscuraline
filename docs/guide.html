@@ -72,6 +72,10 @@ table.k td:first-child { white-space: nowrap; width: 1%; padding-right: 14px; }
 .drive-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
 .drive-head .kicker { color: var(--cyan); }
 .sub-sec { padding-top: 34px; }
+.screen { margin: 22px auto 8px; width: fit-content; max-width: 100%; text-align: center; }
+.screen .bezel { display: inline-block; padding: 14px; border-radius: 18px; background: #14101F; border: 1px solid var(--line); box-shadow: 0 0 0 4px #0A061A, 0 0 40px rgba(60, 232, 255, .18); }
+.screen img { display: block; width: 480px; max-width: calc(100vw - 80px); height: auto; aspect-ratio: 1; image-rendering: pixelated; border-radius: 6px; }
+.hero-screen { margin: 0 auto; }
 footer { color: var(--sub); font-size: 13px; padding: 30px 0 50px; border-top: 1px solid var(--line); }
 footer a { color: var(--sub); }
 svg text { font-family: var(--mono); fill: var(--sub); font-size: 13px; }
@@ -106,7 +110,7 @@ svg .deco { font: 700 46px var(--narrow); letter-spacing: 2px; }
     <a class="btn primary" href="https://thefirmwarehub.com/">Get it from The Firmware Hub</a>
     <a class="btn ghost" href="#drive">How to drive</a>
   </div>
-  <div><div class="art"><svg data-scene="hero" viewBox="0 0 600 420"></svg></div></div>
+  <figure class="screen hero-screen"><div class="bezel"><img src="mixtape.gif" width="240" height="240" alt="OBSCURA LINE on the FM-1's screen: the neon loop, then quick bursts of the train at speed through a sunset town, past palms by the sea, over a river, through a neon city, fields, cherry trees and a starry night, then back to the loop"></div></figure>
 </div>
 
 <ul class="toc">
