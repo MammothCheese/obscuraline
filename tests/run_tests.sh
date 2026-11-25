@@ -55,7 +55,7 @@ done
 $CC -DBOARD_SMK37=1 -o "$OUT/ldr_test_smk" tests/ldr_test.c
 run "update loader, SMK-37: app area 0x4000-0x9CFFF, protected ranges untouched" "$OUT/ldr_test_smk" "$OUT/smk_old.fwsc" "$OUT/smk_new.fwsc"
 found=0
-for m in ":SMK-37 Pro_92" "-elite:SMK-37 Elite_92" "-mke:MKE-P37_92"; do
+for m in ":SMK-37 Pro_198" "-elite:SMK-37 Elite_198" "-mke:MKE-P37_198"; do
     for f in build/obscura*-smk37${m%%:*}.fwsc; do
         [ -f "$f" ] || continue
         found=1

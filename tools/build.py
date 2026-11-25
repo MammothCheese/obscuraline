@@ -55,13 +55,13 @@ SDK_SHA256 = {
 }
 
 BOARD = "fm1"                       # fm1 (default) or smk37: BOARD env or --board
-BOARD_PREFIX = {"fm1": "FM-1_92", "smk37": "SMK-37 Pro_92"}   # identity: prefix + minor (0: a dev build)
+BOARD_PREFIX = {"fm1": "FM-1_198", "smk37": "SMK-37 Pro_198"}   # identity: prefix + minor (0: a dev build)
 BOARD_DEFS = {"fm1": [], "smk37": ["-DBOARD_SMK37=1"]}
 MODELS = {"pro": "SMK-37 Pro", "elite": "SMK-37 Elite", "mke": "MKE-P37"}   # smk37: one keyboard, three names
 DATA_FAMILY = "OBSCURA"             # the SMK store's owner tag (store.h): 1..7 of A-Z 0-9. Your fork: your own
 SCREEN_NAME = "OBSCURA"               # the update loader's screen (FM-1, ldr_screen.c): the name and its colour (RGB565)
 SCREEN_COLOUR = 0xF9F9              # neon magenta, #FF3CC8
-PRODUCT = "FM-1_920"                # Obscura Line: 92N (Mechanica Obscura 95N, DENSHA FM1 94N) (Dinghy is 99N) (OUR_LOADER in the installer wants FM-1_9NN). Your fork: pick your own
+PRODUCT = "FM-1_1980"               # Obscura Line: FM-1_198N (N: the minor version). The update loader keeps its own ota-FM-1_900. Your fork: pick your own
 VERSION = None                      # APP_VER for release builds
 
 
@@ -301,7 +301,7 @@ def main():
     if subprocess.run([sys.executable, str(Path(__file__).resolve().parent / "content.py")]).returncode:
         raise SystemExit("content: fix content/puzzles.txt or content/script.txt (the message above says where)")
     ap = argparse.ArgumentParser()
-    ap.add_argument("--release", metavar="X.Y", help="release build: identity FM-1_95Y, version string X.Y")
+    ap.add_argument("--release", metavar="X.Y", help="release build: identity FM-1_198Y, version string X.Y")
     ap.add_argument("--board", choices=sorted(BOARD_PREFIX), default=None,
                     help="target board: fm1 (default) or smk37 (default: $BOARD, else fm1)")
     ap.add_argument("--model", choices=sorted(MODELS), default=None,
