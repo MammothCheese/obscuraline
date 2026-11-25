@@ -866,7 +866,7 @@ static void tglow(int32_t x0, int32_t y0, int32_t x1, int32_t y1, uint16_t c, ui
 
 /* sprites */
 enum { TP_BOX, TP_TREE, TP_MAST, TP_LIMIT, TP_STOP, TP_NAME, TP_PERSON, TP_PORTAL, TP_POST, TP_TRAIN, TP_CHECK,
-       TP_FAN, TP_XING, TP_CAR, TP_LAMP, TP_WHISTLE, TP_SMOKE, TP_ROCK, TP_SHELTER, TP_CRANE, TP_PARASOL, TP_GARLAND, TP_STALL };
+       TP_FAN, TP_XING, TP_CAR, TP_LAMP, TP_WHISTLE, TP_SMOKE, TP_ROCK, TP_SHELTER, TP_CRANE, TP_PARASOL, TP_GARLAND, TP_STALL, TP_BUSH, TP_CONE };
 typedef struct { int32_t z; int16_t type, x0, x1, h0, h1; uint16_t c, arg; } tspr_t;
 #define TV_NSPR 190u
 static tspr_t tspr[TV_NSPR];
@@ -911,6 +911,8 @@ static void tr_sprites(void)
         int32_t at = (int32_t)lot * 30;
         if (tr_zone(at) == TZ_TUNNEL) continue;
         if (tr.L->dbl) { if (at % 60 == 0) tspr_add(at * 1000 - pmm, TP_MAST, 2600 + tR2, 2800 + tR2, 0, 6600, RGB(60, 50, 70), 0); }
+        else if (tr_mode == TRM_ENODEN)        /* the Enoden: wooden poles, crossarms and wires, the arm over the line */
+            tspr_add(at * 1000 - pmm, TP_MAST, lot & 1u ? 2000 : -2240, lot & 1u ? 2240 : -2000, 0, 7600, RGB(96, 78, 62), (lot & 1u ? 0u : 1u) | 2u);
         else tspr_add(at * 1000 - pmm, TP_MAST, lot & 1u ? 2000 : -2200, lot & 1u ? 2200 : -2000, 0, 6200, RGB(70, 56, 70), lot & 1u ? 0 : 1);
     }
     for (lot = pm / 16u; (int32_t)lot * 16 < far; lot++)   /* the scenery, 16 m lots each side */
@@ -919,6 +921,12 @@ static void tr_sprites(void)
             int32_t sgn = side ? 1 : -1, z = (int32_t)lot * 16000 + (int32_t)(h & 7u) * 1000 - pmm, wz = (int32_t)lot * 16, rx = side ? tR2 : 0;
             if (!side && wz > dist - plat - 15 && wz < dist + 30) continue;
             if (side && z0 == TZ_SEA) continue;
+            if (tr_mode == TRM_ENODEN && (z0 == TZ_HOUSES || z0 == TZ_COUNTRY || z0 == TZ_TOWN) && z < 150000 && ((h >> 27) % 3u) != 0u) {
+                static const uint16_t AJISAI[4] = {RGB(110, 140, 230), RGB(150, 110, 210), RGB(90, 170, 230), RGB(200, 120, 190)};
+                int32_t bx = (z0 == TZ_HOUSES ? 1500 : 2500) + (int32_t)((h >> 2) & 3u) * 120 + rx, bw = (z0 == TZ_HOUSES ? 800 : 1300) + (int32_t)((h >> 5) & 3u) * 200;   /* (the alleys: inside the walls, by the rail) */
+                tspr_add(z - 9000, TP_BUSH, sgn < 0 ? -bx - bw : bx, sgn < 0 ? -bx : bx + bw, 0, (z0 == TZ_HOUSES ? 700 : 1000) + (int32_t)((h >> 7) & 3u) * 150, AJISAI[(h >> 29) & 3u], h & 0xFFFFu);
+                if (z0 != TZ_HOUSES && ((h >> 9) & 1u)) tspr_add(z - 1000, TP_BUSH, sgn < 0 ? -bx - bw * 2 : bx + bw / 2, sgn < 0 ? -bx - bw / 2 : bx + bw * 2, 0, 1200, AJISAI[(h >> 25) & 3u], (h >> 8) & 0xFFFFu);
+            }
             if (z0 == TZ_BEACH) {               /* the bay: pastel beach houses and palms on the left; sand, parasols, palms, the sea on the right */
                 static const uint16_t PASTEL[4] = {RGB(255, 170, 200), RGB(140, 230, 230), RGB(255, 220, 150), RGB(190, 160, 255)};
                 if (!side) {
@@ -937,6 +945,11 @@ static void tr_sprites(void)
                 if ((h >> 14) % 3u != 0u) tspr_add(z, TP_STALL, sgn < 0 ? -x0 - w : x0, sgn < 0 ? -x0 : x0 + w, 0, 3000, (h >> 16) & 1u ? RGB(255, 80, 120) : RGB(255, 200, 60), (h >> 18) & 3u);
                 else tspr_add(z, TP_TREE, sgn * (x0 + 1500) - 2000, sgn * (x0 + 1500) + 2000, 0, 5200, (h >> 21) & 1u ? RGB(255, 160, 210) : RGB(255, 120, 200), 1);
                 continue;
+            }
+            if (z0 == TZ_SEA && tr_mode == TRM_ENODEN && lot % 2u == 0u && z < 120000) {   /* the Enoden: green cones along the coast road, beyond the fence */
+                int32_t cxp = 2700 + (int32_t)((h >> 11) & 3u) * 120 + rx;
+                tspr_add((int32_t)lot * 16000 - pmm, TP_CONE, cxp - 220, cxp + 220, 0, 700, 0, 0);
+                tspr_add((int32_t)lot * 16000 + 8000 - pmm, TP_CONE, cxp - 220, cxp + 220, 0, 700, 0, 0);
             }
             if (z0 == TZ_SEA) {                 /* the beach: palms along the shore, their fronds against the sky */
                 if ((h >> 18) % 2u == 0u) { int32_t x0 = 3600 + (int32_t)((h >> 6) & 7u) * 700 + rx; tspr_add(z, TP_TREE, -x0 - 2600, -x0 + 2600, 0, 9500 + (int32_t)((h >> 10) & 7u) * 600, RGB(34, 26, 40), 2); }
@@ -1034,7 +1047,7 @@ static void tr_sprites(void)
     }
     for (i = 1; i < (int32_t)tr.L->nzon; i++)
         if (tr.L->zon[i].v == TZ_TUNNEL)
-            tspr_add((int32_t)tr.L->zon[i].at * 1000 - pmm, TP_PORTAL, -40000, 40000, 0, 30000, RGB(60, 50, 70), 0);
+            tspr_add((int32_t)tr.L->zon[i].at * 1000 - pmm, TP_PORTAL, -40000, 40000, 0, 30000, tr_mode == TRM_ENODEN ? RGB(52, 92, 48) : RGB(60, 50, 70), tr_mode == TRM_ENODEN);
     for (i = 1; i < (int32_t)tr.L->nlim; i++)
         tspr_add((int32_t)tr.L->lim[i].at * 1000 - pmm, TP_LIMIT, -2700, -1900, 1800, 2600, 0, (uint32_t)tr.L->lim[i].v);
     for (i = 0; i < (int32_t)tr.L->nev; i++) {
@@ -1052,12 +1065,13 @@ static void tr_sprites(void)
     }
     if (tr.on_live) {
         int32_t x = tr.L->dbl ? tR2 : 3400;
-        tspr_add(tr.on_mm - pmm, TP_TRAIN, x - 1400, x + 1400, 900, 3900, RGB(70, 60, 90), RGB(255, 60, 200));
+        if (tr_mode == TRM_ENODEN) tspr_add(tr.on_mm - pmm, TP_TRAIN, x - 1400, x + 1400, 900, 3900, RGB(30, 120, 86), RGB(236, 226, 186));
+        else tspr_add(tr.on_mm - pmm, TP_TRAIN, x - 1400, x + 1400, 900, 3900, RGB(70, 60, 90), RGB(255, 60, 200));
     }
     tspr_add(dist * 1000 - plat * 340 - pmm, TP_NAME, -4600, -2200, 2600, 3500, 0, 0);
     if (!tr.L->canopy) tspr_add(dist * 1000 - plat * 600 - pmm, TP_SHELTER, -4400, -2400, 1100, 3400, RGB(80, 60, 70), 0);
     else for (i = 0; i * 15 < plat * (tr.L->canopy == 2 ? 9 : 5) / 10; i++)   /* the canopy's pillars */
-        tspr_add(dist * 1000 - (plat * (tr.L->canopy == 2 ? 95 : 70) / 100 - i * 15) * 1000 - pmm, TP_POST, -3200, -3000, 1100, 4100, RGB(60, 46, 80), 0);
+        tspr_add(dist * 1000 - (plat * (tr.L->canopy == 2 ? 95 : 70) / 100 - i * 15) * 1000 - pmm, TP_POST, -3220, -2980, 1100, 4100, tr_mode == TRM_ENODEN ? RGB(96, 66, 46) : RGB(60, 46, 80), tr_mode == TRM_ENODEN);
     for (i = 0; i < 5; i++) {
         uint32_t h = th32((uint32_t)i * 31u + (uint32_t)(tr.L - TR_LEGS));
         int32_t at = dist * 1000 - (plat - 20) * 1000 + i * (plat * 1000 - 20000) / 5 + (int32_t)(h & 4095u) * 2;
@@ -1183,15 +1197,55 @@ static void tspr_draw(const tspr_t *s)
         break;
     }
     case TP_MAST: {
-        int32_t ax = TV_W / 2 + tjpx(off + (s->arg ? 300 : -300), jj8), ay = yg - tjpx(5700, jj8), t = tjpx(150, jj8);
+        int32_t ax = TV_W / 2 + tjpx(off + (s->arg & 1u ? 300 : -300), jj8), ay = yg - tjpx(5700, jj8), t = tjpx(150, jj8);
         trect(xa, ya, xb, yb, c);
-        if (s->arg) trect(xa, ay, ax, ay + (t > 1 ? t : 1), c);
+        if (s->arg & 1u) trect(xa, ay, ax, ay + (t > 1 ? t : 1), c);
         else trect(ax, ay, xb, ay + (t > 1 ? t : 1), c);
+        if (s->arg & 2u) {                      /* the Enoden's pole: two crossarms near its top, white insulators on them */
+            int32_t k, aw = tjpx(900, jj8) + 1, th2 = t > 1 ? t : 1, cx2 = (xa + xb) / 2;
+            uint16_t ic = TSW(tlit(RGB(235, 235, 225), z, 0)), ac = TSW(tlit(RGB(60, 50, 44), z, 0));
+            for (k = 0; k < 2; k++) {
+                int32_t y2 = ya + tjpx(250 + k * 650, jj8);
+                trect(cx2 - aw, y2, cx2 + aw + 1, y2 + th2, ac);
+                if (w >= 2) { trect(cx2 - aw, y2 - th2, cx2 - aw + th2, y2, ic); trect(cx2 + aw + 1 - th2, y2 - th2, cx2 + aw + 1, y2, ic); }
+            }
+            if (z < 90000 && w >= 2)            /* a transformer drum on every few */
+                if (((s->x0 + s->z / 1000) & 3) == 0) trect(cx2 - tjpx(260, jj8), ya + tjpx(1300, jj8), cx2 + tjpx(260, jj8) + 1, ya + tjpx(2000, jj8), TSW(tlit(RGB(150, 150, 150), z, 0)));
+        }
+        break;
+    }
+    case TP_BUSH: {                             /* a hydrangea: a low mound of leaves, round heads of flowers on it */
+        int32_t k, cx2 = (xa + xb) / 2, rr = w / 2 + 1, dy;
+        uint16_t lc = TSW(tlit(RGB(40, 100, 50), z, 0)), lc2 = TSW(tlit(RGB(60, 130, 60), z, 0));
+        for (dy = 0; dy <= h; dy++) {           /* the mound */
+            int32_t hw = rr * (int32_t)mo_isqrt((uint32_t)(256 - (h - dy) * (h - dy) * 256 / ((h + 1) * (h + 1)))) / 16;
+            tspan(ya + dy, cx2 - hw, cx2 + hw + 1, dy < h / 3 ? lc2 : lc);
+        }
+        if (w >= 4) for (k = 0; k < 5; k++) {   /* the heads: blue to violet, a lighter top */
+            uint32_t hh = th32((uint32_t)s->arg * 7u + (uint32_t)k);
+            int32_t hx = xa + (int32_t)(hh % (uint32_t)w), hy = ya + (int32_t)((hh >> 8) % (uint32_t)(h / 2 + 1)), hr = w / 7 + 1, d2;
+            uint16_t fc = TSW(tlit(mix565(s->c, RGB(255, 255, 255), (hh >> 16) & 63u), z, 0)), fc2 = TSW(tlit(mix565(s->c, RGB(255, 255, 255), 120), z, 0));
+            for (d2 = -hr; d2 <= hr; d2++) {
+                int32_t hw = (int32_t)mo_isqrt((uint32_t)(hr * hr - d2 * d2));
+                tspan(hy + d2, hx - hw, hx + hw + 1, d2 < -hr / 3 ? fc2 : fc);
+            }
+        }
         break;
     }
     case TP_POST:
         trect(xa, ya, xb, yb, c);
+        if (s->arg == 1u && h >= 6) {           /* a wooden canopy post: braces up to the roof beam, both ways */
+            int32_t cx2 = (xa + xb) / 2, bl = tjpx(600, jj8) + 1, k;
+            for (k = 0; k <= (w > 3); k++) { tline(cx2 + k, ya + bl, cx2 - bl + k, ya, c); tline(cx2 + k, ya + bl, cx2 + bl + k, ya, c); }
+        }
         break;
+    case TP_CONE: {                             /* a green barrier cone by the road, a bar to the next */
+        int32_t cx2 = (xa + xb) / 2, k;
+        uint16_t gc = TSW(tlit(RGB(40, 170, 110), z, 0)), gc2 = TSW(tlit(RGB(230, 240, 235), z, 0));
+        for (k = 0; k < h; k++) { int32_t hw = w * (k + 2) / (2 * h + 2); tspan(ya + k, cx2 - hw, cx2 + hw + 1, k > h / 3 && k < h / 2 ? gc2 : gc); }
+        trect(cx2, ya + h / 4, cx2 + w * 2, ya + h / 4 + 1, gc);
+        break;
+    }
     case TP_PARASOL: {                          /* a beach parasol: a pole, a striped canopy */
         int32_t cx = (xa + xb) / 2, ch = h / 3 + 1, k;
         uint16_t c2 = TSW(tlit(RGB(250, 245, 255), z, 0));
@@ -1290,15 +1344,31 @@ static void tspr_draw(const tspr_t *s)
         trect(xa, ya, hx0, yb, c);
         trect(hx1, ya, xb, yb, c);
         trect(hx0, ya, hx1, hy, c);
-        trect(hx0 - 2, hy - 2, hx1 + 2, hy, TSW(tp->neon2));   /* a neon strip over the mouth */
+        if (s->arg) {                           /* the Gokurakuji tunnel: a brick mouth, a stone rim, the hill's green over it */
+            int32_t bt = tjpx(500, jj8) + 1;
+            trect(hx0 - bt, hy - bt, hx0, yb, TSW(tlit(RGB(140, 70, 54), z, 0)));
+            trect(hx1, hy - bt, hx1 + bt, yb, TSW(tlit(RGB(140, 70, 54), z, 0)));
+            trect(hx0 - bt, hy - bt * 2, hx1 + bt, hy, TSW(tlit(RGB(170, 160, 140), z, 0)));
+        } else trect(hx0 - 2, hy - 2, hx1 + 2, hy, TSW(tp->neon2));   /* a neon strip over the mouth */
         break;
     }
     case TP_TRAIN: {
         int32_t wy0 = ya + h / 6, wy1 = ya + h / 2, lh = h / 10 + 1, lw = w / 7 + 1;
         uint16_t lc = TSW(RGB(255, 250, 230));
         trect(xa, ya, xb, yb, c);
+        if (tr_mode == TRM_ENODEN) {            /* the Enoden: cream round the windows, green below, a pantograph up to the wire */
+            uint16_t cc = TSW(tlit(s->arg, z, 0)), pc = TSW(tlit(RGB(40, 40, 46), z, 0));
+            int32_t cx2 = (xa + xb) / 2, ph = h / 4 + 1, pw = w / 3 + 1;
+            trect(xa, ya + h / 10, xb, wy1 + h / 10, cc);
+            trect(xa + w / 10, wy0, xb - w / 10, wy1, TSW(tlit(RGB(30, 30, 50), z, 0)));
+            trect(xa, wy1 + h / 6, xb, wy1 + h / 6 + (h > 30 ? 2 : 1), TSW(tlit(RGB(200, 170, 80), z, 0)));
+            tline(cx2 - pw / 2, ya, cx2, ya - ph / 2, pc); tline(cx2, ya - ph / 2, cx2 - pw / 2, ya - ph, pc);
+            tline(cx2 + pw / 2, ya, cx2, ya - ph / 2, pc); tline(cx2, ya - ph / 2, cx2 + pw / 2, ya - ph, pc);
+            trect(cx2 - pw / 2 - 1, ya - ph, cx2 + pw / 2 + 2, ya - ph + 1, pc);
+        } else {
         trect(xa + w / 10, wy0, xb - w / 10, wy1, TSW(tlit(RGB(30, 30, 50), z, 0)));
         trect(xa, wy1 + h / 8, xb, wy1 + h / 4, TSW(s->arg));
+        }
         trect(xa + w / 8, yb - h / 5, xa + w / 8 + lw, yb - h / 5 + lh, lc);
         trect(xb - w / 8 - lw, yb - h / 5, xb - w / 8, yb - h / 5 + lh, lc);
         if (tp->amb < 220u) {                   /* the glare */
@@ -1311,8 +1381,29 @@ static void tspr_draw(const tspr_t *s)
         int32_t k, lamp = tjpx(260, jj8) + 1;
         uint32_t ph = (fm1_ms / 400u) & 1u;
         for (k = 0; k < 6; k++) trect(xa, ya + h * k / 6, xb, ya + h * (k + 1) / 6, TSW(tlit(k & 1 ? RGB(240, 200, 20) : RGB(20, 20, 20), z, 0)));
+        if (tr_mode == TRM_ENODEN) {            /* the Enoden: two lamps one above the other, on brackets toward the line, a black hood each */
+            int32_t lx = s->arg ? xa - lamp * 2 : xb + lamp, k2;
+            for (k2 = 0; k2 < 2; k2++) {
+                int32_t ly = ya + h / 8 + k2 * (lamp * 2 + 1), on = z < 160000 && (int)ph == k2;
+                trect(s->arg ? lx + lamp : xb, ly + lamp / 2, s->arg ? xa : lx, ly + lamp / 2 + 1, TSW(tlit(RGB(30, 30, 30), z, 0)));   /* the bracket */
+                trect(lx, ly - 1, lx + lamp, ly, TSW(tlit(RGB(16, 16, 18), z, 0)));   /* its hood */
+                trect(lx, ly, lx + lamp, ly + lamp, TSW(on ? RGB(255, 40, 60) : tlit(RGB(80, 20, 30), z, 0)));
+                if (on && z < 50000 && lamp > 2) tglow(lx - 1, ly - 1, lx + lamp + 1, ly + lamp + 1, RGB(255, 40, 60), 60);
+            }
+        } else {
         trect(xa - lamp, ya, xa, ya + lamp, TSW(z < 160000 && ph ? RGB(255, 40, 60) : tlit(RGB(80, 20, 30), z, 0)));
         trect(xb, ya, xb + lamp, ya + lamp, TSW(z < 160000 && !ph ? RGB(255, 40, 60) : tlit(RGB(80, 20, 30), z, 0)));
+        }
+        if (tr_mode == TRM_ENODEN && h >= 6) {  /* the crossbuck: an X of yellow boards edged black, over the lamps */
+            int32_t cx2 = (xa + xb) / 2, xr2 = lamp * 2 + 1, y0 = ya - lamp * 3 - 1, k;
+            uint16_t yc = TSW(tlit(RGB(250, 205, 30), z, 0)), bc = TSW(tlit(RGB(20, 20, 20), z, 0));
+            for (k = -1; k <= 1; k++) {
+                uint16_t cc = k ? bc : yc;
+                tline(cx2 - xr2, y0 + k, cx2 + xr2, y0 + xr2 + k, cc);
+                tline(cx2 - xr2, y0 + xr2 + k, cx2 + xr2, y0 + k, cc);
+            }
+            tline(cx2 - xr2, y0, cx2 + xr2, y0 + xr2, yc); tline(cx2 - xr2, y0 + xr2, cx2 + xr2, y0, yc);
+        }
         break;
     }
     case TP_WHISTLE: {                          /* a whistle board: sound the horn; white, a black rim, a W */
@@ -1372,8 +1463,18 @@ static void ttrack(int32_t y, int32_t cx, int32_t jj8, int32_t x0, int32_t z, in
     uint16_t rc = TSW(tlit(tp->rail, z, TL_TRACK | tn));
     if (bed) {
         tspan(y, cx + tjpx(x0 - 1400, jj8), cx + tjpx(x0 + 1400, jj8), TSW(tlit(tn ? RGB(50, 44, 54) : tp->ballast, z, TL_TRACK | tn)));
-        if (dz < 380 && (uint32_t)(wz % 625) < 230u) tspan(y, cx + tjpx(x0 - 1050, jj8), cx + tjpx(x0 + 1050, jj8), TSW(tlit(tp->sleeper, z, TL_TRACK | tn)));
-        else if (dz < 900) tspan(y, cx + tjpx(x0 - 1050, jj8), cx + tjpx(x0 + 1050, jj8), TSW(tlit(mix565(tp->ballast, tp->sleeper, 110), z, TL_TRACK | tn)));
+        uint16_t slc = tr_mode == TRM_ENODEN && !tn ? RGB(178, 174, 164) : tp->sleeper;   /* (the Enoden: concrete) */
+        if (dz < 380 && (uint32_t)(wz % 625) < 230u) tspan(y, cx + tjpx(x0 - 1050, jj8), cx + tjpx(x0 + 1050, jj8), TSW(tlit(slc, z, TL_TRACK | tn)));
+        else if (dz < 900) tspan(y, cx + tjpx(x0 - 1050, jj8), cx + tjpx(x0 + 1050, jj8), TSW(tlit(mix565(tp->ballast, slc, 110), z, TL_TRACK | tn)));
+        if (tr_mode == TRM_ENODEN && !tn && dz < 300) {   /* the ballast's stones: a few light and dark specks a row, near */
+            int32_t a = cx + tjpx(x0 - 1400, jj8), b = cx + tjpx(x0 + 1400, jj8), x;
+            uint16_t s1 = TSW(tlit(mix565(tp->ballast, RGB(235, 230, 220), 60), z, TL_TRACK)), s2 = TSW(tlit(mix565(tp->ballast, RGB(60, 46, 40), 60), z, TL_TRACK));
+            uint32_t hs = th32((uint32_t)(wz / 90) * 2654435761u + (uint32_t)x0);
+            for (x = a; x < b; x += 4 + (int32_t)(hs & 7u)) {
+                hs = hs * 1103515245u + 12345u;
+                if (x >= 0 && x < TV_W && ((hs >> 16) & 3u) == 0u) tvb[y * TV_W + x] = (hs >> 18) & 1u ? s1 : s2;
+            }
+        }
     }
     tspan(y, xl, xl + rw, rc);
     tspan(y, xr, xr + rw, rc);
@@ -1453,6 +1554,18 @@ static void tr_view(void)
             for (y = TV_HY - hn_h; y < TV_HY; y++) tvb[y * TV_W + x] = hn;
         }
         if (tp->sun || tp->lit) tspan(TV_HY - 1, 0, xmax, TSW(mix565(tp->hor, RGB(255, 255, 255), 60)));   /* the horizon's glow */
+        if (tr_mode == TRM_ENODEN && sea_now) {   /* Enoshima, out on the sea: a wooded hump, the lighthouse tower on its crown */
+            int32_t ix = 200 - (((sx / 8) % 300) + 300) % 300, k, y;
+            uint16_t ic = TSW(mix565(RGB(50, 90, 60), tp->hor, 90)), tc = TSW(mix565(RGB(225, 225, 220), tp->hor, 60));
+            if (ix < 40) ix += 300;
+            for (k = -34; k <= 34; k++) {
+                int32_t ak = k < 0 ? -k : k, ht = 16 - ak * ak / 80 - (k > 10 ? (k - 10) / 4 : 0);
+                if (ix + k <= xmax || ix + k >= TV_W || ht <= 0) continue;
+                for (y = TV_HY - ht; y < TV_HY; y++) tvb[y * TV_W + ix + k] = ic;
+            }
+            for (y = TV_HY - 26; y < TV_HY - 15; y++) if (ix - 3 > xmax && ix - 1 < TV_W) { tvb[y * TV_W + ix - 3] = tc; tvb[y * TV_W + ix - 2] = tc; }
+            if (ix - 4 > xmax && ix < TV_W) for (k = -4; k <= 0; k++) tvb[(TV_HY - 26) * TV_W + ix + k] = tc;
+        }
     }
     {   /* the heart's run: how far it has gone from a tunnel */
         int32_t hs = tr_hs();
@@ -1584,16 +1697,45 @@ static void tr_view(void)
             trect(xo, ptop, xy, top + 1, TSW(tlit(RGB(120, 110, 130), z, 0)));
             trect(xy, ptop, xf, top + 1, TSW(tlit(RGB(255, 200, 40), z / 2, 0)));
             trect(xf, ptop, xe, top + 1, TSW(tlit(tp->lit ? tp->neon2 : RGB(220, 215, 225), z / 2, 0)));
-            trect(xe, top, pxp + 1, yg + 1, TSW(tlit(RGB(70, 60, 80), z, 0)));
+            trect(xe, top, pxp + 1, yg + 1, TSW(tlit(tr_mode == TRM_ENODEN ? RGB(150, 146, 138) : RGB(70, 60, 80), z, 0)));   /* (the Enoden: a concrete face) */
             if (tr.L->canopy && wz > dist_mm - plat * (tr.L->canopy == 2 ? 95 : 70) / 100 && wz < dist_mm - plat * (tr.L->canopy == 2 ? 5 : 20) / 100) {
                 int32_t ry = yg - tjpx(4100, jj8), xc = cx + tjpx(-1800, jj8);
                 if (!pcy2) pcy2 = ry;
-                trect(xo, ry, xc + 1, pcy2 + 1, TSW(tlit(RGB(36, 26, 50), z, 0)));
-                trect(xc - 1, ry, xc + 2, pcy2 + 2, TSW(TR_STYLE_COL[tr.L->style_to % 11u]));
+                trect(xo, ry, xc + 1, pcy2 + 1, TSW(tlit(tr_mode == TRM_ENODEN ? RGB(70, 50, 40) : RGB(36, 26, 50), z, 0)));   /* (the Enoden: a wooden roof, its beam) */
+                trect(xc - 1, ry, xc + 2, pcy2 + 2, tr_mode == TRM_ENODEN ? TSW(tlit(RGB(120, 84, 56), z, 0)) : TSW(TR_STYLE_COL[tr.L->style_to % 11u]));
                 pcy2 = ry;
             } else pcy2 = 0;
             ptop = top; pxp = xe;
         } else ptop = 0;
+        if (tr_mode == TRM_ENODEN) {            /* the crossings' barriers: striped arms down, from each post across the road */
+            static int32_t bxl, bxr, bby;
+            uint32_t q;
+            int on = 0;
+            for (q = 0; q < tr.L->nxing; q++) {
+                int32_t d = wz - ((int32_t)tr.L->xing[q] * 1000 - 3800);
+                if (d >= 0 && d < 7000) { on = 1; break; }
+            }
+            if (on) {
+                int32_t xl = cx + tjpx(-3300, jj8), xr = cx + tjpx(3100 + tR2, jj8), by = yg - tjpx(1000, jj8), t2 = tjpx(140, jj8) + 2;
+                uint16_t bc = TSW(tlit(((wz / 600) & 1) ? RGB(250, 205, 30) : RGB(20, 20, 20), z, 0));
+                if (bby && r) { trect(xl < bxl ? xl : bxl, by, (xl < bxl ? bxl : xl) + 1, by + t2, bc); trect(xr < bxr ? xr : bxr, by, (xr < bxr ? bxr : xr) + 1, by + t2, bc); }
+                trect(xl, by, xl + 1, by + t2, bc); trect(xr, by, xr + 1, by + t2, bc);
+                bxl = xl; bxr = xr; bby = by;
+            } else bby = 0;
+        }
+        {
+        static int32_t sfx, sfy;
+        if (tr_mode == TRM_ENODEN && zn == TZ_SEA) {   /* the coast: a low concrete fence between the line and the road, posts every two metres */
+            int32_t fx2 = cx + tjpx(1500, jj8), fy2 = yg - tjpx(900, jj8), fy3 = yg - tjpx(450, jj8), t2 = tjpx(60, jj8) + 1;
+            uint16_t fc = TSW(tlit(RGB(200, 196, 186), z, 0)), fc2 = TSW(tlit(RGB(150, 146, 138), z, 0));
+            if (sfy && r) {
+                trect(fx2 < sfx ? fx2 : sfx, fy2, (fx2 < sfx ? sfx : fx2) + 1, fy2 + t2, fc);
+                trect(fx2 < sfx ? fx2 : sfx, fy3, (fx2 < sfx ? sfx : fx2) + 1, fy3 + t2, fc2);
+            }
+            if (r && wz / 2000 != (pmm + tz_mm[r - 1]) / 2000) trect(fx2, fy2, fx2 + t2 + (t2 > 2), yg, fc);
+            sfx = fx2; sfy = fy2;
+        } else sfy = 0;
+        }
         if (zn == TZ_RIVER) {
             int32_t cy = yg - tjpx(2700, jj8), xl = cx + tjpx(-2150, jj8), xr = cx + tjpx(2150 + tR2, jj8);
             uint16_t gc = TSW(tlit(RGB(150, 70, 60), z, 0));
@@ -1601,6 +1743,15 @@ static void tr_view(void)
             pch_l = xl; pch_r = xr; pcy = cy;
         } else pch_l = 0;
         if (r && wy >= 0) tline(tcx[r - 1], pyw, cx, wy, TSW(tlit(RGB(30, 26, 40), z, zn == TZ_TUNNEL ? TL_TUNNEL : 0)));
+        if (tr_mode == TRM_ENODEN && zn != TZ_TUNNEL && !tr.L->dbl) {   /* the Enoden: feeders and phone lines on the poles' crossarms, both sides */
+            static int32_t fx[4], fy[4];
+            int32_t k2;
+            for (k2 = 0; k2 < 4; k2++) {
+                int32_t lx = cx + tjpx((k2 & 1 ? 2120 : -2120) + (k2 & 1 ? 1 : -1) * 800, jj8), ly = yg - tjpx(k2 < 2 ? 7350 : 6700, jj8);
+                if (r && fy[k2] > 0 && ly >= 0) tline(fx[k2], fy[k2], lx, ly, TSW(tlit(RGB(36, 30, 34), z, 0)));
+                fx[k2] = lx; fy[k2] = ly;
+            }
+        }
         pyw = wy;
         while (si < tnspr && (r == TV_GH - 1 || tspr[si].z > tz_mm[r + 1])) tspr_draw(&tspr[si++]);
     }
